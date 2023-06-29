@@ -42,13 +42,14 @@ export default function TabNavigator() {
             tabBarItemStyle: styles.tab_item,
             tabBarLabelStyle: styles.tab_label,
             headerStyle: styles.header,
-            headerTintColor: 'white',
+            headerTitleStyle: styles.header_title
           }}>
               <Tab.Screen
                   name='Schedule'
                   component={ScheduleScreen}
                   options={{
                       title: "Schedule",
+                      headerTitle: "🗓️ Schedule",
                       tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} icon="🗓️" />,
                   }}
               />
@@ -57,6 +58,7 @@ export default function TabNavigator() {
                   component={CheckInScreen}
                   options={{
                       title: "Check In",
+                      headerTitle: "📍 Check In",
                       tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} icon="📍" />,
                   }}
               />
@@ -65,6 +67,7 @@ export default function TabNavigator() {
                   component={YourHoursScreen}
                   options={{
                       title: "Your Hours",
+                      headerTitle: "⌛️ Your Hours",
                       tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} icon="⌛️" />,
                   }}
               />
@@ -73,6 +76,7 @@ export default function TabNavigator() {
                   component={AccountScreen}
                   options={{
                       title: "Account",
+                      headerTitle: "👩🏻 Account",
                       tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} icon="👩🏻"/>,
                   }}
               />
@@ -85,10 +89,15 @@ const styles = StyleSheet.create({
     header: {
         backgroundColor: '#24121C'
     },
+    header_title: {
+        fontSize: 18,
+        color: "white",
+        textTransform: "uppercase",
+        fontWeight: 800,
+    },
     tab_navigator: {
         backgroundColor: 'white',
-        height: 90,
-        paddingTop: 10
+        paddingTop: 10,
     },
     tab_item: {
         borderRightStyle: 'solid',
@@ -98,24 +107,25 @@ const styles = StyleSheet.create({
     tab_label: {
         color:"black",
         textTransform: "uppercase",
-        fontSize: 10,
+        fontSize: 8,
+        marginTop: 5
     },
     tab_icon: {
-        fontSize: 20,
+        fontSize: 15,
     },
     tabIconContainer: {
         alignItems: 'center',
         justifyContent: 'center',
     },
     tab_circle: {
-        width: 40,
-        height: 40,
+        width: 30,
+        height: 30,
         borderRadius: 25,
         backgroundColor: 'transparent',
         alignItems: 'center',
         justifyContent: 'center',
-        borderWidth: 2,
-        borderColor: 'white',
+        borderWidth: 0.2,
+        borderColor: 'gray',
     },
     tab_activeCircle: {
         backgroundColor: 'yellow',

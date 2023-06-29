@@ -1,10 +1,12 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
+import CurrentDate from "../components/CurrentDate"
+
 const Account = () => {
     return (
         <View>
-            <Text>Account</Text>
+            <CurrentDate></CurrentDate>
         </View>
     )
 }
