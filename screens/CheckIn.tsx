@@ -1,16 +1,18 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
+import { Screens } from "../styles"
+
 // Components
-import CurrentDate from "../components/CurrentDate"
-import Button from '../components/Button'
-import StopwatchTimer from '../components/StopwatchTimer'
+import CurrentDate from "../components/atoms/CurrentDate";
+import Button from '../components/atoms/Button';
+import StopwatchTimer from '../components/molecules/StopwatchTimer';
 
 const CheckIn = () => {
     return (
-        <View>
+        <View style={Screens.primary}>
             <CurrentDate></CurrentDate>
-            <View style={styles.justified_container}>
+            <View style={[styles.justified_container]}>
                 <Text style={styles.paragraph}>Start your working hours when you are ready. We will keep the time for you.</Text>
                 <StopwatchTimer></StopwatchTimer>
             </View>

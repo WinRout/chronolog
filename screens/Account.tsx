@@ -1,11 +1,13 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-import CurrentDate from "../components/CurrentDate"
+import { Typo, Colors, Screens } from '../styles'
+
+import CurrentDate from "../components/atoms/CurrentDate"
 
 const Account = () => {
     return (
-        <View>
+        <View style={[Screens.primary, styles.container]}>
             <CurrentDate></CurrentDate>
         </View>
     )
@@ -16,8 +18,6 @@ export default Account
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
     },
     smallText: {
         color: "black"

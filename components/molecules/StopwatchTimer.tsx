@@ -8,7 +8,8 @@ import Animated, {
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import Button from './Button';
+import Button from '../atoms/Button';
+import Timer from '../atoms/Timer';
 
 const StopwatchTimer = () => {
     const [isRunning, setIsRunning] = useState(false);
@@ -52,7 +53,6 @@ const StopwatchTimer = () => {
 
 
     const startStopwatch = () => {
-        setElapsedTime(0)
         setStartTime(Date.now());
         setIsRunning(true);
         timerRef.current = setInterval(() => {
@@ -67,47 +67,21 @@ const StopwatchTimer = () => {
         storeCounterValue();
     };
 
-    const formatTime = (milliseconds: number) => {
-        const totalSeconds = Math.floor(milliseconds / 1000);
-        const hours = Math.floor(totalSeconds / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = totalSeconds % 60;
-
-        const formattedHours = String(hours).padStart(2, '0');
-        const formattedMinutes = String(minutes).padStart(2, '0');
-        const formattedSeconds = String(seconds).padStart(2, '0');
-
-        return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
-    };
-
     return (
-        <View>
+        <View style={styles.stopwatchTimer_box}>
             <Button 
             text={ isRunning? 'Check Out': 'Check In' }
             onPress={isRunning ? stopStopwatch : startStopwatch}
             ></Button>
-            <Text 
-            style={[
-                styles.timer_text, 
-                isRunning ? styles.active : styles.inactive]}>
-                {formatTime(elapsedTime)}
-            </Text>
+            <Timer time={elapsedTime}></Timer>
         </View>
     );
 }
 
 
 const styles = StyleSheet.create({
-    timer_text: {
-        alignSelf: 'center',
-        marginTop: 30,
-        fontSize: 40,
-    },
-    active: {
-        color: 'black'
-    },
-    inactive: {
-        color: 'gray'
+    stopwatchTimer_box: {
+        alignItems: 'center'
     }
 })
 

@@ -1,18 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-// Icons
-import SvgUri from 'react-native-svg-uri';
-
-const TabBarIcon = ({ focused, icon }) => {
-    return (
-        <View style={styles.tabIconContainer}>
-            <View style={[styles.tab_circle, focused && styles.tab_activeCircle]}>
-                <Text style={styles.tab_icon}>{icon}</Text>
-            </View>
-        </View>
-    );
-};
+import TabBarIcon from "../components/atoms/TabBarIcon"
+import { Header, Navigator } from "../styles"
 
 // Navigation
 import { NavigationContainer } from "@react-navigation/native";
@@ -38,11 +28,11 @@ export default function TabNavigator() {
       <NavigationContainer>
           <Tab.Navigator initialRouteName='Schedule'
           screenOptions={{
-            tabBarStyle: styles.tab_navigator,
-            tabBarItemStyle: styles.tab_item,
-            tabBarLabelStyle: styles.tab_label,
-            headerStyle: styles.header,
-            headerTitleStyle: styles.header_title
+            tabBarStyle: Navigator.navigator,
+            tabBarItemStyle: Navigator.item,
+            tabBarLabelStyle: Navigator.label,
+            headerStyle: Header.header,
+            headerTitleStyle: Header.header_text
           }}>
               <Tab.Screen
                   name='Schedule'
@@ -84,50 +74,3 @@ export default function TabNavigator() {
       </NavigationContainer>
   )
 }
-
-const styles = StyleSheet.create({
-    header: {
-        backgroundColor: '#24121C'
-    },
-    header_title: {
-        fontSize: 18,
-        color: "white",
-        textTransform: "uppercase",
-        fontWeight: 800,
-    },
-    tab_navigator: {
-        backgroundColor: 'white',
-        paddingTop: 10,
-    },
-    tab_item: {
-        borderRightStyle: 'solid',
-        borderRightWidth: 0.2,
-        borderColor: 'gray'
-    },
-    tab_label: {
-        color:"black",
-        textTransform: "uppercase",
-        fontSize: 8,
-        marginTop: 5
-    },
-    tab_icon: {
-        fontSize: 15,
-    },
-    tabIconContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    tab_circle: {
-        width: 30,
-        height: 30,
-        borderRadius: 25,
-        backgroundColor: 'transparent',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderWidth: 0.2,
-        borderColor: 'gray',
-    },
-    tab_activeCircle: {
-        backgroundColor: 'yellow',
-    },
-});
