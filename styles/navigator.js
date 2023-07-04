@@ -2,29 +2,39 @@ import * as Colors from "./colors"
 import * as Typos from "./typography"
 
 export const navigator = {
-    backgroundColor: Colors.yellow,
-    paddingTop: 20,
-    shadowOffset: { height: 5 },
-    shadowColor: Colors.dark,
-    shadowRadius: 10,
-    shadowOpacity: 0.5,
+    position: 'absolute',
+    backgroundColor: 'white',
+    shadowOffset: { height: -5 },
+    shadowOpacity: 0.2,
+    shadowColor: 'gray',
+    shadowRadius: 5,
+    shadowOpacity: 0.2,
+    height: 'auto',
+    borderColor: Colors.borderSecondary,
+    borderTopWidth: 1,
+
+
 }
 
 export const item = {
     borderRightStyle: 'solid',
-    borderRightWidth: 0.5,
-    borderColor: Colors.mantarini
+    borderRightWidth: 1,
+    borderColor: Colors.borderSecondary,
+    flex:1,
+    paddingBottom:5,
+    paddingTop: 20,
 }
 
 export const label = {
     ...Typos.textXXSmall,
-    color: "black",
-    marginBottom: -10,
+    color: Colors.textPrimary,
+    marginBottom: 0,
     marginTop: 10
 }
 
 export const icon = {
-    fontSize: 16,
+    fontSize: 15,
+    color: Colors.textPrimary,
 }
 
 export const iconContainer = {
@@ -39,10 +49,10 @@ export const circle = {
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 0.5,
-    borderColor: Colors.mantarini,
+    borderWidth: 2,
+    borderColor: Colors.borderSecondary,
 }
 
 export const activeCircle = {
-    backgroundColor: Colors.mantarini,
+    backgroundColor: Colors.yellow,
 }

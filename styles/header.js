@@ -2,11 +2,13 @@ import * as Colors from "./colors"
 import * as Typos  from "./typography"
 
 export const header = {
-    backgroundColor: Colors.yellow,
-    shadowOffset: {height:5},
-    shadowColor: Colors.dark,
-    shadowRadius: 10,
-    shadowOpacity: 0.2
+    backgroundColor: 'white',
+    shadowOffset: {height:10},
+    shadowColor: Colors.gray,
+    shadowRadius: 5,
+    shadowOpacity: 0.5,
+    borderColor: Colors.borderSecondary,
+    borderBottomWidth: 1
 }
 
 export const header_text = {
