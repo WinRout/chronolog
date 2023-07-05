@@ -12,6 +12,24 @@ const Account = () => {
     const [isEnabledStop, setIsEnabledStop] = useState(false);
     const ToggleSwitchStart = () => setIsEnabledStart(previousState => !previousState);
     const ToggleSwitchStop = () => setIsEnabledStop(previousState => !previousState);
+
+    const data = [
+        {
+            title: "Time to start",
+            description: "Receive a notification when it is time to start.",
+            icon: "☀",
+            color: '#B203FC',
+            isEnabled: isEnabledStart,
+            toggleSwitch: ToggleSwitchStart
+        },
+        {
+            title: "Time to stop",
+            description: "Receive a notification when it is itme to stop",
+            icon: '🌙',
+            color: '#5F41FE',
+            isEnabled: isEnabledStop,
+            toggleSwitch: ToggleSwitchStop
+        }]
     
     return (
         <View style={Screens.primary}>

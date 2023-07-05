@@ -16,6 +16,11 @@ export const primary = {
     borderBottom: '0.50px white solid',
 }
 
+export const primary_disabled = {
+    ...primary,
+    backgroundColor: Colors.gray
+}
+
 export const primary_text = {
     ...Typo.headingBold,
     color: 'white'

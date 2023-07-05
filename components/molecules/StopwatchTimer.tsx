@@ -7,44 +7,47 @@ import { Typo, Colors } from '../../styles'
 
 import Button from '../atoms/Button';
 import Timer from '../atoms/Timer';
+import twoButtonAlert from '../../functionality/twoButtonAlert';
 
 const StopwatchTimer = () => {
     const [isRunning, setIsRunning] = useState(false);
+    const [isStarted, setIsStarted] = useState(false);
+    const [isFinished, setIsFinished] = useState(false);
     const [elapsedTime, setElapsedTime] = useState(0);
     const [startTime, setStartTime] = useState(Object);
     const [rotationAnimation] = useState(new Animated.Value(0));
     const [icon, setIcon] = useState('⌛️')
     const timerRef = useRef<NodeJS.Timeout | undefined>();
 
-    useEffect(() => {
-        const loadTimerState = async () => {
-            try {
-                const storedState = await AsyncStorage.getItem('stopwatchTimerState');
-                if (storedState) {
-                    const { isRunning: storedIsRunning, startTime: storedStartTime } = JSON.parse(storedState);
-                    setIsRunning(storedIsRunning);
-                    setStartTime(storedStartTime);
-                }
-            } catch (error) {
-                console.log('Error loading timer state:', error);
-            }
-        };
+    // useEffect(() => {
+    //     const loadTimerState = async () => {
+    //         try {
+    //             const storedState = await AsyncStorage.getItem('stopwatchTimerState');
+    //             if (storedState) {
+    //                 const { isRunning: storedIsRunning, startTime: storedStartTime } = JSON.parse(storedState);
+    //                 setIsRunning(storedIsRunning);
+    //                 setStartTime(storedStartTime);
+    //             }
+    //         } catch (error) {
+    //             console.log('Error loading timer state:', error);
+    //         }
+    //     };
 
-        loadTimerState();
-    }, []);
+    //     loadTimerState();
+    // }, []);
 
-    useEffect(() => {
-        const saveTimerState = async () => {
-            try {
-                const stateToStore = JSON.stringify({ isRunning, startTime });
-                await AsyncStorage.setItem('stopwatchTimerState', stateToStore);
-            } catch (error) {
-                console.log('Error saving timer state:', error);
-            }
-        };
+    // useEffect(() => {
+    //     const saveTimerState = async () => {
+    //         try {
+    //             const stateToStore = JSON.stringify({ isRunning, startTime });
+    //             await AsyncStorage.setItem('stopwatchTimerState', stateToStore);
+    //         } catch (error) {
+    //             console.log('Error saving timer state:', error);
+    //         }
+    //     };
 
-        saveTimerState();
-    }, [isRunning, elapsedTime]);
+    //     saveTimerState();
+    // }, [isRunning, elapsedTime]);
 
     useEffect(() => {
         if (isRunning) {
@@ -68,12 +71,11 @@ const StopwatchTimer = () => {
                 useNativeDriver: true,
             }).start(() => {
                 rotationAnimation.setValue(0);
-                setIcon(icon === '⌛️' ? '⏳' : '⌛️');
             });
         };
 
         if (isRunning) {
-            const intervalId = setInterval(rotateIconEvery3Seconds, 1500);
+            const intervalId = setInterval(rotateIconEvery3Seconds, 2000);
             return () => clearInterval(intervalId);
         }
     }, [isRunning, rotationAnimation, icon]);
@@ -81,7 +83,9 @@ const StopwatchTimer = () => {
     const handleToggleTimer = () => {
         const date = new Date();
         setStartTime(date)
-        setIsRunning(prevIsRunning => !prevIsRunning);
+        setElapsedTime(0);
+        setIsRunning(true);
+        setIsStarted(true)
 
         // Trigger animation
         Animated.timing(rotationAnimation, {
@@ -97,11 +101,22 @@ const StopwatchTimer = () => {
     };
 
     const handleResetTimer = () => {
-        setElapsedTime(0);
-        setIsRunning(false);
-
-        // Trigger animation
-        setIcon('⌛️');
+        const reset = () => {
+            setIsRunning(false);
+            setIsFinished(true);
+            // Trigger animation
+            setTimeout(() => {
+                setIcon('✅');
+            }, 501)
+        }
+        twoButtonAlert({
+            title: 'Alert', 
+            message: 'Are you sure you want to check out?',
+            button1_text: 'Yes',
+            button1_onPress: reset,
+            button2_text: 'No',
+            button2_onPress: null,
+        })
     };
 
     const rotateIcon = rotationAnimation.interpolate({
@@ -118,7 +133,7 @@ const StopwatchTimer = () => {
 
     return (
         <View>
-            {!isRunning &&
+            {!isStarted && !isFinished &&
             <View style={{...styles.wrapper}}>
                     <Text style={styles.text}>
                         Start your working hours when you are ready. We will keep the time for you.
@@ -129,7 +144,7 @@ const StopwatchTimer = () => {
                 />
             </View>
             }
-            {isRunning &&
+            {isStarted &&
             <View style={styles.wrapper}>
                 <Text style={styles.text_checkedIn}>
                     📍You have checked in at {' '}
@@ -140,16 +155,27 @@ const StopwatchTimer = () => {
             </View>
             }
             <Animated.Text style={[styles.icon, { transform: [{ rotate: rotateIcon,  }] }]}>{icon}</Animated.Text>
-            {isRunning &&
-                <View style={styles.wrapper}>
-                    <Text style={styles.text}>
-                        When you finish your work you can check out and your hours will be saved.
-                    </Text>
-                    <Button
-                        text={'Check out'}
-                        onPress={handleResetTimer}
-                    />
-                </View>
+            {isStarted && !isFinished &&
+            <View style={styles.wrapper}>
+                <Text style={styles.text}>
+                    When you finish your work you can check out and your hours will be saved.
+                </Text>
+                <Button
+                    text={'Check out'}
+                    onPress={handleResetTimer}
+                />
+            </View>
+            }
+            {!isRunning && isFinished &&
+            <View style={styles.wrapper}>
+                <Text style={styles.text}>
+                    Your hours have been saved.
+                </Text>
+                <Button
+                    text={'Check out'}
+                    disabled={true}
+                />
+            </View>
             }
         </View>
     );
