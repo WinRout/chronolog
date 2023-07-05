@@ -3,7 +3,7 @@ import React from 'react'
 
 import { Typo, Colors } from '../../styles'
 
-const AccountItem = ({title, description, color, icon, toggleSwitch, isEnabled}) => {
+const NotificationSetting = ({title, description, color, icon, toggleSwitch, isEnabled}) => {
   return (
     <View style={styles.wrapper}>
         <View style={styles.box_content}>
@@ -27,7 +27,7 @@ const AccountItem = ({title, description, color, icon, toggleSwitch, isEnabled})
   )
 }
 
-export default AccountItem
+export default NotificationSetting
 
 const styles = StyleSheet.create({
     wrapper: {

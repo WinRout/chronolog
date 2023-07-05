@@ -10,8 +10,7 @@ import Timer from '../components/atoms/Timer'
 
 const Schedule = () => {
   return (
-    <ScrollView>
-      <View style={Screens.primary}>
+      <ScrollView style={Screens.primary}>
         <CurrentDate></CurrentDate>
         <View style={styles.welcome_box}>
           <View style={styles.weather_box}>
@@ -33,8 +32,7 @@ const Schedule = () => {
             12:00-{'\n'}17:00
           </Text>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
   )
 }
 
