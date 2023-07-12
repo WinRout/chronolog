@@ -10,8 +10,9 @@ import TotalTime from '../components/molecules/TotalTime'
 const YourHours = () => {
     return (
         <ScrollView style={Screens.primary}>
-            <TotalTime></TotalTime>
-            <HoursHistory></HoursHistory>                
+            <View style={Screens.primary}>
+                <HoursHistory></HoursHistory>  
+            </View>              
         </ScrollView>
     )
 }

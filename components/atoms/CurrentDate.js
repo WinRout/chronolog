@@ -3,14 +3,13 @@ import React from 'react'
 
 import { Typo, Colors } from "../../styles"
 
+import { dateToJson } from '../../functionality/mainFunctions';
+
 export default function CurrentDate() {
     const currentDate = new Date();
-    const options = { weekday: 'long', day: 'numeric', month: 'long' };
-    const formattedDate = currentDate.toLocaleDateString('en-US', options);
-    const [weekday, month_day_no] = formattedDate.split(', ');
-    const [month, day_no] = month_day_no.split(' ');
+    const dateJson = dateToJson(currentDate)
   return (
-    <Text style={styles.date_text}>{weekday},{'\n'}{day_no} {month}</Text>
+    <Text style={styles.date_text}>{dateJson.weekday},{'\n'}{dateJson.day_no} {dateJson.month}</Text>
   )
 }
 

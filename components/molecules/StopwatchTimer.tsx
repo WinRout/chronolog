@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { View, Text, StyleSheet, Animated } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useIsFocused } from "@react-navigation/native";
 
 import { Typo, Colors } from '../../styles'
 
@@ -9,48 +10,124 @@ import Button from '../atoms/Button';
 import Timer from '../atoms/Timer';
 import twoButtonAlert from '../../functionality/twoButtonAlert';
 
+import { dateToSec } from '../../functionality/mainFunctions';
+import { storeHours } from '../../functionality/storeHours';
+
 const StopwatchTimer = () => {
-    const [isRunning, setIsRunning] = useState(false);
-    const [isStarted, setIsStarted] = useState(false);
-    const [isFinished, setIsFinished] = useState(false);
-    const [elapsedTime, setElapsedTime] = useState(0);
-    const [startTime, setStartTime] = useState(Object);
+
+    const isFocused = useIsFocused();
+
+    const [timerState, setTimerState] = useState({
+        isRunning: false,
+        isStarted: false,
+        isFinished: false,
+        startTime: undefined,
+        finishTime: undefined,
+        isStored: false,
+        isSaved: false,
+    });
+
     const [rotationAnimation] = useState(new Animated.Value(0));
-    const [icon, setIcon] = useState('⌛️')
+    const [elapsedTime, setElapsedTime] = useState(0);
+    const [icon, setIcon] = useState('⌛️');
     const timerRef = useRef<NodeJS.Timeout | undefined>();
 
-    // useEffect(() => {
-    //     const loadTimerState = async () => {
-    //         try {
-    //             const storedState = await AsyncStorage.getItem('stopwatchTimerState');
-    //             if (storedState) {
-    //                 const { isRunning: storedIsRunning, startTime: storedStartTime } = JSON.parse(storedState);
-    //                 setIsRunning(storedIsRunning);
-    //                 setStartTime(storedStartTime);
-    //             }
-    //         } catch (error) {
-    //             console.log('Error loading timer state:', error);
-    //         }
-    //     };
+    useEffect(() => {
+        const loadTimerState = async () => {
+            try {
+                const storedState = await AsyncStorage.getItem('stopwatchTimerState');
+                console.log("loaded: ", storedState)
+                if (storedState != null) {
+                    const parsedState = JSON.parse(storedState);
+                    const startTimeDateObj = new Date (parsedState.startTime);
+                    const finishTimeDateObj = new Date(parsedState.finishTime);
+                    
+                    setTimerState({
+                        isRunning: parsedState.isRunning,
+                        isStarted: parsedState.isStarted,
+                        isFinished: parsedState.isFinished,
+                        startTime: startTimeDateObj,
+                        finishTime: finishTimeDateObj,
+                        isStored: parsedState.isStored,
+                    });
+                    
+                    let dateReference: Date;
+                    if (parsedState.isFinished == true) {
+                        dateReference = finishTimeDateObj;
+                    }
+                    else {
+                        dateReference = new Date();
+                    }
+                    setElapsedTime(() => {
+                        const differenceInMilliseconds = dateToSec(dateReference) - dateToSec(startTimeDateObj);
+                        return differenceInMilliseconds;
+                    })  
+                    setIcon(() => {
+                        if (parsedState.isFinished == true) {
+                            return '✅';
+                        }
+                        else {
+                            return '⌛️';
+                        }
+                    })
+                }  
+                else {
+                    setTimerState({
+                        isRunning: false,
+                        isStarted: false,
+                        isFinished: false,
+                        startTime: undefined,
+                        finishTime: undefined,
+                        isStored: false,
+                        isSaved: false,
+                    });
+                    setElapsedTime(0);
+                    setIcon('⌛️');
+                }
+            } catch (error) {
+                console.log('Error loading timer state:', error);
+            }
+        };
+        if (isFocused) {
+            loadTimerState();
+        }
+    }, [isFocused]);
 
-    //     loadTimerState();
-    // }, []);
-
-    // useEffect(() => {
-    //     const saveTimerState = async () => {
-    //         try {
-    //             const stateToStore = JSON.stringify({ isRunning, startTime });
-    //             await AsyncStorage.setItem('stopwatchTimerState', stateToStore);
-    //         } catch (error) {
-    //             console.log('Error saving timer state:', error);
-    //         }
-    //     };
-
-    //     saveTimerState();
-    // }, [isRunning, elapsedTime]);
 
     useEffect(() => {
-        if (isRunning) {
+        const saveTimerState = async (timerStateToStore) => {
+            try {
+                const stateToStore = JSON.stringify(timerStateToStore);
+                console.log("stored: ", stateToStore);
+                await AsyncStorage.setItem('stopwatchTimerState', stateToStore);
+            } catch (error) {
+                console.log('Error saving timer state:', error);
+            }
+        };
+        if (timerState.isStored == true) {
+            return;
+        }
+        else if (timerState.isFinished == true) {
+            setTimerState(prevState => ({
+                ...prevState,
+                isStored: true
+            }));
+            saveTimerState({...timerState, isStored: true});
+            console.log("SAVING TO HISTORY");
+            storeHours(timerState);
+        }
+        else if (timerState.startTime != undefined && timerState.isSaved == false) {
+            setTimerState(prevState => ({
+                ...prevState,
+                isSaved: true
+            }));
+            saveTimerState({ ...timerState, isSaved: true });
+        }
+    }, [timerState]);
+    
+
+    useEffect(() => {
+        if (timerState.isRunning) {
             timerRef.current = setInterval(() => {
                 setElapsedTime(prevElapsedTime => prevElapsedTime + 1);
             }, 1000);
@@ -61,7 +138,7 @@ const StopwatchTimer = () => {
         return () => {
             clearInterval(timerRef.current);
         };
-    }, [isRunning]);
+    }, [timerState.isRunning]);
 
     useEffect(() => {
         const rotateIconEvery3Seconds = () => {
@@ -74,18 +151,22 @@ const StopwatchTimer = () => {
             });
         };
 
-        if (isRunning) {
+        if (timerState.isRunning) {
             const intervalId = setInterval(rotateIconEvery3Seconds, 2000);
             return () => clearInterval(intervalId);
         }
-    }, [isRunning, rotationAnimation, icon]);
+    }, [timerState.isRunning, rotationAnimation, icon]);
 
-    const handleToggleTimer = () => {
+    const handleToggleTimer = async () => {
         const date = new Date();
-        setStartTime(date)
-        setElapsedTime(0);
-        setIsRunning(true);
-        setIsStarted(true)
+
+        setTimerState(prevState => ({
+            ...prevState,
+            startTime: date,
+            isRunning: true,
+            isStarted: true,
+        }));
+       
 
         // Trigger animation
         Animated.timing(rotationAnimation, {
@@ -97,13 +178,18 @@ const StopwatchTimer = () => {
             rotationAnimation.setValue(0);
             // Animation completed, update the icon
             setIcon('⏳');
-        });
+        }); 
     };
 
     const handleResetTimer = () => {
         const reset = () => {
-            setIsRunning(false);
-            setIsFinished(true);
+            const date = new Date();
+            setTimerState(prevState => ({
+                ...prevState,
+                isRunning: false,
+                isFinished: true,
+                finishTime: date,
+            }));
             // Trigger animation
             setTimeout(() => {
                 setIcon('✅');
@@ -125,15 +211,15 @@ const StopwatchTimer = () => {
     });
 
     const formatTime = (time: number) => {
-        const hours = Math.floor(time/360)
-        const minutes = Math.floor(time / 60);
+        const hours = Math.floor(time / 3600);
+        const minutes = Math.floor(time / 60) % 60;
         const seconds = time % 60;
         return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     };
 
     return (
         <View>
-            {!isStarted && !isFinished &&
+            {!timerState.isStarted && !timerState.isFinished &&
             <View style={{...styles.wrapper}}>
                     <Text style={styles.text}>
                         Start your working hours when you are ready. We will keep the time for you.
@@ -144,29 +230,31 @@ const StopwatchTimer = () => {
                 />
             </View>
             }
-            {isStarted &&
+            {timerState.isStarted &&
             <View style={styles.wrapper}>
                 <Text style={styles.text_checkedIn}>
                     📍You have checked in at {' '}
-                    {startTime.getHours().toString().padStart(2, '0')}:
-                    {startTime.getMinutes().toString().padStart(2, '0')}
+                    {timerState.startTime.getHours().toString().padStart(2, '0')}:
+                    {timerState.startTime.getMinutes().toString().padStart(2, '0')}
                 </Text>
                 <Timer text={formatTime(elapsedTime)}></Timer>
             </View>
             }
+  
             <Animated.Text style={[styles.icon, { transform: [{ rotate: rotateIcon,  }] }]}>{icon}</Animated.Text>
-            {isStarted && !isFinished &&
+            
+            {timerState.isStarted && !timerState.isFinished &&
             <View style={styles.wrapper}>
                 <Text style={styles.text}>
                     When you finish your work you can check out and your hours will be saved.
                 </Text>
                 <Button
                     text={'Check out'}
-                    onPress={handleResetTimer}
+                    onPress={ handleResetTimer }
                 />
             </View>
             }
-            {!isRunning && isFinished &&
+            {!timerState.isRunning && timerState.isFinished &&
             <View style={styles.wrapper}>
                 <Text style={styles.text}>
                     Your hours have been saved.

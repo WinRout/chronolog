@@ -5,15 +5,15 @@ import { Typo, Colors } from '../../styles'
 
 import Timer from '../atoms/Timer'
 
-const TotalTime = () => {
+const TotalTime = ({time}) => {
   return (
     <View style={styles.wrapper}>
         <Text style={styles.text}>
             Here is a summary of the hours you worked and which day.
         </Text>
         <View style={styles.wrapper_total_time}>
-            <Text style={Typo.textXSmall}>IN TOTAL</Text>
-            <Timer text={'10:10:32'}></Timer>
+            <Text style={{...Typo.textXSmall, color:Colors.textPrimary}}>IN TOTAL</Text>
+            <Timer text={time}></Timer>
         </View>
       </View>
   )

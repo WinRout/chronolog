@@ -26,7 +26,7 @@ const AccountInformation = () => {
             <Text style={Boxes.primary_title}>Personal Information</Text>
             <View style={Boxes.primary}>
                 {profile.map(([key, value]) => (
-                    <AccountCard title={key} content={value}></AccountCard> 
+                    <AccountCard key={key} title={key} content={value}></AccountCard> 
                 ))}
             </View>
         </View>
