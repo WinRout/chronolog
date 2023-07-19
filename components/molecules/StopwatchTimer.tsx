@@ -12,6 +12,7 @@ import twoButtonAlert from '../../functionality/twoButtonAlert';
 
 import { dateToSec } from '../../functionality/mainFunctions';
 import { storeHours } from '../../functionality/storeHours';
+import LongPressButton from '../atoms/LongPressButton';
 
 const StopwatchTimer = () => {
 
@@ -32,6 +33,7 @@ const StopwatchTimer = () => {
     const [rotationAnimation] = useState(new Animated.Value(0));
     const [elapsedTime, setElapsedTime] = useState(0);
     const [icon, setIcon] = useState('⌛️');
+    
     const timerRef = useRef<NodeJS.Timeout | undefined>();
 
     useEffect(() => {
@@ -260,7 +262,11 @@ const StopwatchTimer = () => {
                     <Text style={styles.text}>
                         Start your working hours when you are ready. We will keep the time for you.
                     </Text>
-                <Button
+                {/* <Button
+                    text={'Check in'}
+                    onPress={handleToggleTimer}
+                /> */}
+                <LongPressButton 
                     text={'Check in'}
                     onPress={handleToggleTimer}
                 />
@@ -284,7 +290,7 @@ const StopwatchTimer = () => {
                 <Text style={styles.text}>
                     When you finish your work you can check out and your hours will be saved.
                 </Text>
-                <Button
+                <LongPressButton
                     text={'II'}
                     onPress={ handleStopTimer }
                 />
