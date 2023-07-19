@@ -10,18 +10,31 @@ export const primary = {
     justifyContent:'center',
     alignItems:'center',
     borderRadius: 35, 
-    borderLeft: '0.50px white solid',
-    borderTop: '0.50px white solid', 
-    borderRight: '0.50px white solid',
-    borderBottom: '0.50px white solid',
+    borderWidth: 0.50,
+    borderColor: Colors.surfacePrimary,
 }
 
-export const primary_disabled = {
+export const secondary_dark = {
     ...primary,
+    width: 161
+}
+
+export const secondary_light = {
+    ...secondary_dark,
+    backgroundColor: 'white',
+    borderColor: Colors.green,
+}
+
+export const disabled = {
     backgroundColor: Colors.gray
 }
 
 export const primary_text = {
     ...Typo.headingBold,
     color: 'white'
+}
+
+export const secondary_light_text = {
+    ...Typo.headingBold,
+    color: Colors.green,
 }

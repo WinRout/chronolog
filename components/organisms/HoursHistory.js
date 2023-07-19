@@ -4,9 +4,10 @@ import React, { useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from "@react-navigation/native";
 
-import { dateToJson, formatTime } from '../../functionality/mainFunctions';
+import { dateToJson, formatTime, dateToTimeStr } from '../../functionality/mainFunctions';
+import { categorizeItemsByWeek } from '../../functionality/categorizeItemsByWeek';
 
-import { Boxes, Typo } from '../../styles';
+import { Boxes } from '../../styles';
 
 import HoursItem from '../molecules/HoursItem';
 import TotalTime from '../molecules/TotalTime';
@@ -19,21 +20,18 @@ const HoursHistory = () => {
 
     const loadHistory = async () => {
         try {
-            console.log('parsing histroy:')
             storedHistory = await AsyncStorage.getItem('hoursHistory');
             const parsedHistory = JSON.parse(storedHistory);
+            console.log('parsed histroy')
             console.log(parsedHistory);
+            items = Object.entries(parsedHistory);
+            [total, categorizedItems] = categorizeItemsByWeek(items);
+            //console.log(total, categorizedItems)
 
-            const hourEntries = [];
-            let total = 0;
-            Object.entries(parsedHistory).forEach((entry) => {
-                const [fullDate, values] = entry;
-                total = total + values.elapsedTime;
-                dateArr = dateToJson(fullDate);
-                dateStr = `${dateArr.weekday}, ${dateArr.day_no} ${dateArr.month}`;
-                timeStr = formatTime(values.elapsedTime);
-                hourEntries.push({key: fullDate, date: dateStr, time: timeStr});
-            })
+            const hourEntries = categorizedItems[29];
+            console.log('hourEntries: ', hourEntries);
+     
+            
             setHistory(hourEntries);
             setTotalTime(total);
             
@@ -50,13 +48,15 @@ const HoursHistory = () => {
     
 
   return (
-    <View>
+    <View >
         <TotalTime time={formatTime(totalTime)}></TotalTime>
-        <View style={Boxes.primary}>
+        <View style={{...Boxes.primary, ...styles.historyTable}}>
             {/* <Text style={{ ...Typo.textXSmall, marginLeft: 10, marginTop: 25 }}>WEEK #25:</Text> */}
             { history &&
-            history.map( ({key, date, time}) =>
-                <HoursItem key={key} date={date} time={time}></HoursItem>
+            history.map( ([key, value]) => {
+                console.log("key-value: ", key,value)
+                return <HoursItem key={key} date={value.date} timeIn={value.timeIn} timeOut={value.timeOut} time={value.time}></HoursItem>
+            }
             )}
         </View>
     </View>
@@ -65,4 +65,8 @@ const HoursHistory = () => {
 
 export default HoursHistory
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+    historyTable: {
+        marginTop: 20
+    }
+})

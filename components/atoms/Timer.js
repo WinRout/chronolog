@@ -20,6 +20,6 @@ const styles = StyleSheet.create({
     timer_box: {
         alignContent: 'center',
         alignItems: 'center',
-        padding: 10
+        paddingBottom: 10
     }
 });

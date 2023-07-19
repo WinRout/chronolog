@@ -6,11 +6,11 @@ import { Typo, Colors, Screens } from "../styles"
 import CurrentDate from "../components/atoms/CurrentDate"
 import welcomeMessage from '../functionality/welcomeMessage'
 import Weather from '../components/atoms/Weather'
-import Timer from '../components/atoms/Timer'
 
 const Schedule = () => {
   return (
       <ScrollView style={Screens.primary}>
+        <View style={Screens.primary}>
         <CurrentDate></CurrentDate>
         <View style={styles.welcome_box}>
           <View style={styles.weather_box}>
@@ -18,11 +18,11 @@ const Schedule = () => {
           </View>
           <Text style={styles.welcome_text}>👋{'\n'}{welcomeMessage()}!</Text>
         </View>
-        <View style={{...styles.welcome_box, marginTop:40}}>
+        <View style={{ ...styles.welcome_box, marginTop: 40 }}>
           <Text style={styles.welcome_text}>Here's your working schedule for today.</Text>
         </View>
         <View style={styles.schedule_box}>
-          <Text style={{...Typo.textXSmall, color:Colors.textPrimary}}>📍WORK LOCATION:</Text>
+          <Text style={{ ...Typo.textXSmall, color: Colors.textPrimary }}>📍WORK LOCATION:</Text>
           <Text style={{ ...Typo.headingBold, marginTop: 10, color: Colors.textPrimary }}>Home office</Text>
           <Text style={{ ...Typo.textLight, marginTop: 10, color: Colors.textPrimary }}>
             You can work anywhere as long as your internet speed is fast enough to attend your meetings and upload your work.
@@ -31,6 +31,7 @@ const Schedule = () => {
           <Text style={styles.schedule_time}>
             12:00-{'\n'}17:00
           </Text>
+        </View>
         </View>
       </ScrollView>
   )

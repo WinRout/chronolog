@@ -3,10 +3,10 @@ import React from 'react'
 
 import { Buttons } from "../../styles"
 
-const Button = ({text="Button", onPress=null, disabled=false}) => {
+const Button = ({text="Button", onPress=null, disabled=false, style=Buttons.primary, textStyle = Buttons.primary_text}) => {
   return (
-      <TouchableOpacity onPress={onPress} style={disabled ? Buttons.primary_disabled : Buttons.primary} disabled={disabled}>
-        <Text style={Buttons.primary_text}>{text}</Text>
+      <TouchableOpacity onPress={onPress} style={disabled ? {...style, ...Buttons.disabled} : style} disabled={disabled}>
+        <Text style={textStyle}>{text}</Text>
       </TouchableOpacity>
   )
 }

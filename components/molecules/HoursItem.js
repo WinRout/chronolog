@@ -5,10 +5,11 @@ import { Typo, Colors} from '../../styles'
 
 import Timer from '../atoms/Timer'
 
-const HoursItem = ({date, time}) => {
+const HoursItem = ({date, timeIn='', timeOut='', time}) => {
   return (
     <View style={styles.wrapper}>
       <Text style={{...Typo.headingBold, color:Colors.textPrimary, paddingLeft: 20}}>{date}</Text>
+      <Text style={{...Typo.textPrimary, color:Colors.textPrimary, paddingLeft: 20, marginTop: 10}}>{timeIn} - {timeOut}</Text>
       <Timer text={time}></Timer>
     </View>
   )
@@ -19,7 +20,7 @@ export default HoursItem
 const styles = StyleSheet.create({
   wrapper: {
     paddingTop: 20,
-    borderTopWidth: 1,
+    borderBottomWidth: 1,
     borderColor: Colors.borderSecondary,
   }
 })
