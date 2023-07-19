@@ -5,6 +5,7 @@ export const categorizeItemsByWeek = (items) => {
 
     let total = 0;
     const categorizedItems = {};
+    const weeks = [];
 
     items.forEach((item) => {
         const [fullDate, values] = item;
@@ -15,7 +16,7 @@ export const categorizeItemsByWeek = (items) => {
         const dateInStr = `${dateInArr.weekday}, ${dateInArr.day_no} ${dateInArr.month}`;
         const timeInStr = '📍' + dateToTimeStr(fullDate);
         const dateOutArr = dateToJson(values.dateOut);
-        const dateOutStr = `${dateOutArr.weekday}, ${dateOutArr.day_no} ${dateOutArr.month}`;
+        // const dateOutStr = `${dateOutArr.weekday}, ${dateOutArr.day_no} ${dateOutArr.month}`;
         const timeOutStr = '🏁' + dateToTimeStr(values.dateOut)
         const timeStr = formatTime(values.elapsedTime);
 
@@ -24,6 +25,7 @@ export const categorizeItemsByWeek = (items) => {
 
         
         if (!categorizedItems[weekNumber]) {
+            weeks.push(weekNumber);
             categorizedItems[weekNumber] = [];
         }
         categorizedItems[weekNumber].push([fullDate, {
@@ -31,9 +33,12 @@ export const categorizeItemsByWeek = (items) => {
             timeIn: timeInStr,
             timeOut: timeOutStr,
             time: timeStr,
+            timeValue: values.elapsedTime,
         }]);
     });
 
-    return [total, categorizedItems];
+    weeks.sort((a, b) => b - a);
+ 
+    return [total, weeks, categorizedItems];
         
     }

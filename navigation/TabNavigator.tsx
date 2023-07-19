@@ -13,6 +13,7 @@ import ScheduleScreen from '../screens/Schedule';
 import AccountScreen from '../screens/Account';
 import YourHoursScreen from '../screens/YourHours';
 import CheckInScreen from '../screens/CheckIn';
+import { Screen } from 'react-native-screens';
 
 export type RootStackParamList = {
     Schedule: undefined;
@@ -71,6 +72,7 @@ export default function TabNavigator() {
                   }}
               />
           </Tab.Navigator>
+          
       </NavigationContainer>
   )
 }

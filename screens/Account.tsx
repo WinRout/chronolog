@@ -12,6 +12,8 @@ import AccountInformation from '../components/organisms/AccountInformation'
 import AccountNotifications from '../components/organisms/AccountNotifications'
 import Button from '../components/atoms/Button'
 
+import { generateRandomData } from '../testing/generateRandomData';
+
 
 
 const Account = () => {  
@@ -58,6 +60,7 @@ const Account = () => {
                 <View style={styles.buttonsView}>
                     <Button text={'Reset Timer'} onPress={resetTimer}></Button>
                     <Button text={'Clear History'} onPress={resetHistory}></Button>    
+                    <Button text={'Testing'} onPress={generateRandomData}></Button>  
                 </View>
             </View>
         </ScrollView>
