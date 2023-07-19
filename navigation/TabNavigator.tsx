@@ -33,7 +33,8 @@ export default function TabNavigator() {
             tabBarItemStyle: Navigator.item,
             tabBarLabelStyle: Navigator.label,
             headerStyle: Header.header,
-            headerTitleStyle: Header.header_text
+            headerTitleStyle: Header.header_text,
+            headerShown: false,
           }}>
               <Tab.Screen
                   name='Schedule'
@@ -72,7 +73,7 @@ export default function TabNavigator() {
                   }}
               />
           </Tab.Navigator>
-          
+
       </NavigationContainer>
   )
 }

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, ActivityIndicator } from 'react-native'
 import React, { useState, useEffect } from 'react';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -19,6 +19,7 @@ const HoursHistory = ({weekNo, fullTotal=false}) => {
     const [weeks, setWeeks] = useState(undefined);
     const [history, setHistory] = useState(undefined);
     const [totalTime, setTotalTime] = useState(0);
+    const [isLoading, setIsLoading] = useState(true);
     const isFocused = useIsFocused();
 
     const loadHistory = async () => {
@@ -44,6 +45,7 @@ const HoursHistory = ({weekNo, fullTotal=false}) => {
             setWeeks(week_array);
             setHistory(hourEntries);
             setTotalTime(total);
+            setIsLoading(false);
             
         } catch(err) {
             console.log('error parsing data from storage: ', err);
@@ -57,31 +59,35 @@ const HoursHistory = ({weekNo, fullTotal=false}) => {
         }
     }, [isFocused]);
 
+    if (isLoading) {
+        return ( <ActivityIndicator size="large" style={{alignSelf: 'center', height:200}}/> )
+    }
+
 
   return (
-    <View >
-        <TotalTime time={formatTime(totalTime)}></TotalTime>
-        { !fullTotal &&
-        <View style={{...Boxes.primary, ...styles.historyTable}}>
-            {/* <Text style={{ ...Typo.textXSmall, marginLeft: 10, marginTop: 25 }}>WEEK #25:</Text> */}
-            { history && 
-            history.reverse().map( ([key, value]) => {
-                //console.log("key-value: ", key,value)
-                return <HoursItem key={key} date={value.date} timeIn={value.timeIn} timeOut={value.timeOut} time={value.time}></HoursItem>
+        <View >
+            <TotalTime time={formatTime(totalTime)}></TotalTime>
+            { !fullTotal &&
+            <View style={{...Boxes.primary, ...styles.historyTable}}>
+                {/* <Text style={{ ...Typo.textXSmall, marginLeft: 10, marginTop: 25 }}>WEEK #25:</Text> */}
+                { history && 
+                history.reverse().map( ([key, value]) => {
+                    //console.log("key-value: ", key,value)
+                    return <HoursItem key={key} date={value.date} timeIn={value.timeIn} timeOut={value.timeOut} time={value.time}></HoursItem>
+                }
+                )}
+            </View>
             }
-            )}
+            { fullTotal && weeks && 
+            <GestureHandlerRootView>
+                <View style={styles.weekList}>
+                    {weeks.map((weekNo) => {
+                        return <WeekItem key={weekNo} weekNo={weekNo}></WeekItem>
+                    })}
+                </View> 
+            </GestureHandlerRootView>
+            }
         </View>
-        }
-        { fullTotal && weeks && 
-        <GestureHandlerRootView>
-            <View style={styles.weekList}>
-                {weeks.map((weekNo) => {
-                    return <WeekItem key={weekNo} weekNo={weekNo}></WeekItem>
-                })}
-            </View> 
-        </GestureHandlerRootView>
-        }
-    </View>
   )
 }
 

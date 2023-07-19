@@ -40,14 +40,24 @@ const WeekScreen = () => {
 
 const YourHours = () => {
     return (
-    <Stack.Navigator initialRouteName="All">
+    <Stack.Navigator initialRouteName="Full Total"
+    screenOptions={{
+        headerShown: true,
+        headerBackTitleVisible: false,
+    }}>
         <Stack.Screen
             name="Full Total"
             component={MainScreen}
+            options={{
+                headerShown: false
+            }}
         />
         <Stack.Screen
             name="Week Total" 
             component={WeekScreen}
+            options={({ route }) => ({
+                title: 'Week #' + route.params.weekNo.toString()
+            })}
         />
     </Stack.Navigator>
 )}
