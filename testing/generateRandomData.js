@@ -22,15 +22,15 @@ export const generateRandomData = async () => {
     // Function to generate dummy data
     function generateDummyData() {
         const data = {};
-        const startDate = new Date("2023-01-02T09:00:00+03:00");
+        const endDate = new Date("2023-07-31T09:00:00+03:00");
 
-        for (let i = 0; i < 200; i++) {
-            const timestamp = new Date(startDate.getTime() + i * 24 * 60 * 60 * 1000).toString();
+        for (let i = 0; i <=500; i++) {
+            const timestamp = new Date(endDate.getTime() - i * 24 * 60 * 60 * 1000).toString();
             const elapsed = generateRandomElapsedTime();
             data[timestamp] = {
-                dateOut: new Date(startDate.getTime() + 1*60*60*1000+ + elapsed * 1000).toISOString(),
+                dateOut: new Date(endDate.getTime() + 1*60*60*1000+ + elapsed * 1000).toISOString(),
                 elapsedTime: elapsed,
-                //location: generateLocationData()
+                location: {address: 'Test Address'}
             };
         }
 
@@ -40,8 +40,6 @@ export const generateRandomData = async () => {
 
     // Generate dummy data
     const dummyData = generateDummyData();
-
-    console.log(dummyData);
 
     try {
         

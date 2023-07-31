@@ -25,7 +25,7 @@ export const storeHours = async (timerState) => {
             // get current location
             const location = await getLocation();
             const addr = await getAddress(location.latitude, location.longitude);
-            history = { ...history, [dateIn]: { dateOut: dateOut, elapsedTime: elapsedTime, location: {lat: location.latitude, lng: location.longitude, address: addr } } }
+            history = { ...history, [dateIn]: { dateOut: dateOut, elapsedTime: elapsedTime, location: {lat: location.latitude, lng: location.longitude, address: addr} } }
         } catch(err) {
             console.log('Could not store item. Error getting the location: ' + err);
         }

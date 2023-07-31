@@ -6,11 +6,11 @@ import { useNavigation } from '@react-navigation/native';
 import { Typo, Colors } from '../../styles'
 
 
-const WeekItem = ({weekNo}) => {
+const WeekItem = ({year, weekNo}) => {
 
 const navigation = useNavigation();
 const handleWeekPress = () => {
-    navigation.navigate('Week Total', { weekNo: weekNo })
+    navigation.navigate('Week Total', { year: year, weekNo: weekNo })
 }
 
   return (

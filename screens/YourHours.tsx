@@ -27,12 +27,12 @@ const MainScreen = () => {
 const WeekScreen = () => {
 
     const route = useRoute();
-    const {weekNo} = route.params;
+    const {year, weekNo} = route.params;
 
     return (
         <ScrollView style={Screens.primary}>
             <View style={Screens.primary}>
-                <HoursHistory weekNo={weekNo} fullTotal={false}></HoursHistory>
+                <HoursHistory year={year} weekNo={weekNo} fullTotal={false}></HoursHistory>
             </View>
         </ScrollView>
     )
@@ -56,7 +56,7 @@ const YourHours = () => {
             name="Week Total" 
             component={WeekScreen}
             options={({ route }) => ({
-                title: 'Week #' + route.params.weekNo.toString()
+                title: 'Week #' + route.params.weekNo.toString() + ' - ' + route.params.year.toString()
             })}
         />
     </Stack.Navigator>
