@@ -40,22 +40,6 @@ const Schedule = () => {
 export default Schedule
 
 const styles = StyleSheet.create({
-  welcome_text: {
-    ...Typo.textMedium,
-    alignSelf: 'flex-start',
-    color: Colors.textPrimary
-  },
-  welcome_box: {
-    marginTop: 0,
-    alignSelf: 'center',
-    alignItems: 'center',
-    width:250,
-    gap: -40,
-    marginTop: -40
-  },
-  weather_box: {
-    alignSelf: 'flex-end'
-  },
   schedule_box: {
     marginTop: 20,
     width: 290,

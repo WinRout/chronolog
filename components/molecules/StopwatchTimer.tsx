@@ -266,7 +266,7 @@ const StopwatchTimer = () => {
                     text={'Check in'}
                     onPress={handleToggleTimer}
                 /> */}
-                <LongPressButton 
+                <Button 
                     text={'Check in'}
                     onPress={handleToggleTimer}
                 />
@@ -290,7 +290,7 @@ const StopwatchTimer = () => {
                 <Text style={styles.text}>
                     When you finish your work you can check out and your hours will be saved.
                 </Text>
-                <LongPressButton
+                <Button
                     text={'II'}
                     onPress={ handleStopTimer }
                 />

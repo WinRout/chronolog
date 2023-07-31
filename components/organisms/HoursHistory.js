@@ -73,7 +73,7 @@ const HoursHistory = ({weekNo, fullTotal=false}) => {
                 { history && 
                 history.reverse().map( ([key, value]) => {
                     //console.log("key-value: ", key,value)
-                    return <HoursItem key={key} date={value.date} timeIn={value.timeIn} timeOut={value.timeOut} time={value.time}></HoursItem>
+                    return <HoursItem key={key} date={value.date} timeIn={value.timeIn} timeOut={value.timeOut} time={value.time} address={value.address}></HoursItem>
                 }
                 )}
             </View>

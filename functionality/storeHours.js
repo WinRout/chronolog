@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { getLocation } from './getLocation';
+import getAddress from './getAddress';
 
 
 export const storeHours = async (timerState) => {
@@ -23,7 +24,8 @@ export const storeHours = async (timerState) => {
         try {
             // get current location
             const location = await getLocation();
-            history = { ...history, [dateIn]: { dateOut: dateOut, elapsedTime: elapsedTime, location: location } }
+            const addr = await getAddress(location.latitude, location.longitude);
+            history = { ...history, [dateIn]: { dateOut: dateOut, elapsedTime: elapsedTime, location: {lat: location.latitude, lng: location.longitude, address: addr } } }
         } catch(err) {
             console.log('Could not store item. Error getting the location: ' + err);
         }

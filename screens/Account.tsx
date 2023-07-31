@@ -54,9 +54,9 @@ const Account = () => {
     return (
         <ScrollView style={Screens.primary}>
             <View style={Screens.primary}>
-                <CurrentDate></CurrentDate>
+                {/* <CurrentDate></CurrentDate>
                 <AccountNotifications></AccountNotifications>
-                <AccountInformation></AccountInformation>
+                <AccountInformation></AccountInformation> */}
                 <View style={styles.buttonsView}>
                     <Button text={'Reset Timer'} onPress={resetTimer}></Button>
                     <Button text={'Clear History'} onPress={resetHistory}></Button>    

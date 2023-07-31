@@ -36,7 +36,7 @@ export default function TabNavigator() {
             headerTitleStyle: Header.header_text,
             headerShown: false,
           }}>
-              <Tab.Screen
+              {/* <Tab.Screen
                   name='Schedule'
                   component={ScheduleScreen}
                   options={{
@@ -44,7 +44,7 @@ export default function TabNavigator() {
                       headerTitle: "🗓️ Schedule",
                       tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} icon="🗓️" />,
                   }}
-              />
+              /> */}
               <Tab.Screen
                   name='CheckIn'
                   component={CheckInScreen}

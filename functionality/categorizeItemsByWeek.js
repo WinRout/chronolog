@@ -1,5 +1,6 @@
 import { getISOWeek } from "date-fns";
 import { dateToJson, formatTime, dateToTimeStr } from "./mainFunctions";
+import getAddress from "./getAddress";
 
 export const categorizeItemsByWeek = (items) => {
 
@@ -14,11 +15,12 @@ export const categorizeItemsByWeek = (items) => {
 
         const dateInArr = dateToJson(fullDate);
         const dateInStr = `${dateInArr.weekday}, ${dateInArr.day_no} ${dateInArr.month}`;
-        const timeInStr = '📍' + dateToTimeStr(fullDate);
+        const timeInStr = '⏰' + dateToTimeStr(fullDate);
         const dateOutArr = dateToJson(values.dateOut);
         // const dateOutStr = `${dateOutArr.weekday}, ${dateOutArr.day_no} ${dateOutArr.month}`;
         const timeOutStr = '🏁' + dateToTimeStr(values.dateOut)
         const timeStr = formatTime(values.elapsedTime);
+        const address = '📍' + values.location.address;
 
         const fullDateObj = new Date(fullDate);
         const weekNumber = getISOWeek(fullDateObj);
@@ -34,6 +36,7 @@ export const categorizeItemsByWeek = (items) => {
             timeOut: timeOutStr,
             time: timeStr,
             timeValue: values.elapsedTime,
+            address: address,
         }]);
     });
 
