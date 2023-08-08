@@ -275,7 +275,7 @@ const StopwatchTimer = () => {
             {timerState.isStarted &&
             <View style={styles.wrapper}>
                 <Text style={styles.text_checkedIn}>
-                    📍You have checked in at {' '}
+                    ⏰You have checked in at {' '}
                     {timerState.startTime.getHours().toString().padStart(2, '0')}:
                     {timerState.startTime.getMinutes().toString().padStart(2, '0')}
                 </Text>

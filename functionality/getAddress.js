@@ -8,7 +8,6 @@ export default getAddress = async(lat, lng) => {
         const no = response.results[0].address_components[0].short_name
         const city = response.results[0].address_components[2].short_name
         const address = `${street} ${no}, ${city}`
-        console.log(address)
         return address
     } catch (error) {
         console.error('Error geocoding address: ', error)
