@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
+import { View, Text, StyleSheet, Animated, NativeModules, Platform } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from "@react-navigation/native";
@@ -14,6 +14,8 @@ import { dateToSec } from '../../functionality/mainFunctions';
 import { storeHours } from '../../functionality/storeHours';
 import LongPressButton from '../atoms/LongPressButton';
 
+const { LiveActivity } = NativeModules;
+
 const StopwatchTimer = () => {
 
     const isFocused = useIsFocused();
@@ -27,14 +29,16 @@ const StopwatchTimer = () => {
         isStored: false,
         isSaved: false,
         elapsedTime: 0,
-        restartTime: undefined
+        restartTime: undefined,
+        breakTime: 0,
+        pauseTime: undefined
     });
 
     const [rotationAnimation] = useState(new Animated.Value(0));
     const [elapsedTime, setElapsedTime] = useState(0);
     const [icon, setIcon] = useState('⌛️');
     
-    const timerRef = useRef<NodeJS.Timeout | undefined>();
+    const timerRef = useRef();
 
     useEffect(() => {
         const loadTimerState = async () => {
@@ -46,6 +50,7 @@ const StopwatchTimer = () => {
                     const startTimeDateObj = new Date (parsedState.startTime);
                     const finishTimeDateObj = new Date(parsedState.finishTime);
                     const restartTimeDateObj = new Date(parsedState.restartTime);
+                    const pauseTimeDateObj = new Date(parsedState.pauseTime);
                     
                     setTimerState({
                         isRunning: parsedState.isRunning,
@@ -56,9 +61,11 @@ const StopwatchTimer = () => {
                         isStored: parsedState.isStored,
                         elapsedTime: parsedState.elapsedTime,
                         restartTime: restartTimeDateObj,
+                        breakTime: parsedState.breakTime,
+                        pauseTime: pauseTimeDateObj,
                     });
                     
-                    let dateReference: Date;
+                    let dateReference;
                     if (parsedState.isFinished == true) {
                         dateReference = finishTimeDateObj;
                     }
@@ -94,6 +101,8 @@ const StopwatchTimer = () => {
                         isSaved: false,
                         elapsedTime: 0,
                         restartTime: undefined,
+                        breakTime: 0,
+                        pauseTime: undefined
                     });
                     setElapsedTime(0);
                     setIcon('⌛️');
@@ -148,7 +157,11 @@ const StopwatchTimer = () => {
     useEffect(() => {
         if (timerState.isRunning) {
             timerRef.current = setInterval(() => {
-                setElapsedTime(prevElapsedTime => prevElapsedTime + 1);
+                // currentTime = Date()
+                // setElapsedTime(currentTime - timerState.startTime)/1000;
+                const currentTime = Date.now(); // Get the current timestamp in milliseconds
+                const elapsedTimeInSeconds = Math.floor((currentTime - timerState.startTime) / 1000 - timerState.breakTime);
+                setElapsedTime(elapsedTimeInSeconds);
             }, 1000);
         } else {
             clearInterval(timerRef.current);
@@ -157,7 +170,7 @@ const StopwatchTimer = () => {
         return () => {
             clearInterval(timerRef.current);
         };
-    }, [timerState.isRunning]);
+    }, [timerState.isRunning, timerState.startTime]);
 
     useEffect(() => {
         const rotateIconEvery3Seconds = () => {
@@ -171,7 +184,7 @@ const StopwatchTimer = () => {
         };
 
         if (timerState.isRunning) {
-            const intervalId = setInterval(rotateIconEvery3Seconds, 2000);
+            const intervalId = setInterval(rotateIconEvery3Seconds, 3000);
             return () => clearInterval(intervalId);
         }
     }, [timerState.isRunning, rotationAnimation, icon]);
@@ -183,9 +196,14 @@ const StopwatchTimer = () => {
             ...prevState,
             startTime: date,
             restartTime: date,
+            pauseTime: date,
             isRunning: true,
             isStarted: true,
         }));
+
+        if (Platform.OS === 'ios') {
+            LiveActivity.startActivity(date.toISOString())
+        }
        
 
         // Trigger animation
@@ -202,36 +220,54 @@ const StopwatchTimer = () => {
     };
 
     const handleStopTimer = () => {
+        const date = new Date();
         setTimerState (prevState => ({
             ...prevState,
             isRunning: false,
             elapsedTime: elapsedTime,
+            pauseTime: date,
         }));
+
+        if (Platform.OS === 'ios') {
+            LiveActivity.pauseActivity()
+        }
     }
 
     const handleRestartTimer = () => {
         const date = new Date();
+        const breakT = timerState.breakTime + dateToSec(date) - dateToSec(timerState.pauseTime);
         setTimerState (prevState => ({
             ...prevState,
             isRunning: true,
             restartTime: date,
+            breakTime: breakT,
         }));
+
+        if (Platform.OS === 'ios') {
+            LiveActivity.restartActivity()
+        }
     }
 
     const handleResetTimer = () => {
         const reset = () => {
             const date = new Date();
+            const breakT = timerState.breakTime + dateToSec(date) - dateToSec(timerState.pauseTime);
             setTimerState(prevState => ({
                 ...prevState,
                 isRunning: false,
                 isFinished: true,
                 finishTime: date,
                 elapsedTime: elapsedTime,
+                breakTime: breakT,
             }));
             // Trigger animation
             setTimeout(() => {
                 setIcon('✅');
             }, 501)
+
+            if (Platform.OS === 'ios') {
+                LiveActivity.endActivity()
+            }
         }
         twoButtonAlert({
             title: 'Alert', 
@@ -248,7 +284,7 @@ const StopwatchTimer = () => {
         outputRange: ['0deg', '360deg'],
     });
 
-    const formatTime = (time: number) => {
+    const formatTime = (time) => {
         const hours = Math.floor(time / 3600);
         const minutes = Math.floor(time / 60) % 60;
         const seconds = time % 60;

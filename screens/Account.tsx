@@ -50,6 +50,7 @@ const Account = () => {
             button2_text: 'No', button2_onPress: null
         })
     }
+
     
     return (
         <ScrollView style={Screens.primary}>
@@ -60,7 +61,7 @@ const Account = () => {
                 <View style={styles.buttonsView}>
                     <Button text={'Reset Timer'} onPress={resetTimer}></Button>
                     <Button text={'Clear History'} onPress={resetHistory}></Button>    
-                    <Button text={'Testing'} onPress={generateRandomData}></Button>  
+                    <Button text={'Testing'} onPress={generateRandomData}></Button> 
                 </View>
             </View>
         </ScrollView>
