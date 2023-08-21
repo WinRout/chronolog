@@ -5,7 +5,7 @@ const TabBarIcon = ({ focused, icon }) => {
     return (
         <View style={Navigator.iconContainer}>
             <View style={[Navigator.circle, focused && Navigator.activeCircle]}>
-                <Text style={Navigator.icon}>{icon}</Text>
+                <Text style={[Navigator.icon, focused && Navigator.activeIcon]}>{icon}</Text>
             </View>
         </View>
     );

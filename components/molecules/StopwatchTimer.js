@@ -4,21 +4,28 @@ import { View, Text, StyleSheet, Animated, NativeModules, Platform } from 'react
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from "@react-navigation/native";
 
-import { Typo, Colors, Buttons } from '../../styles'
+import { Typo, Colors, Buttons, Boxes } from '../../styles'
 
 import Button from '../atoms/Button';
 import Timer from '../atoms/Timer';
-import twoButtonAlert from '../../functionality/twoButtonAlert';
+import LongPressButton from '../atoms/LongPressButton';
+
+import StartTimer from './StartTimer';
 
 import { dateToSec } from '../../functionality/mainFunctions';
 import { storeHours } from '../../functionality/storeHours';
-import LongPressButton from '../atoms/LongPressButton';
+import twoButtonAlert from '../../functionality/twoButtonAlert';
+import { getLocation } from '../../functionality/getLocation';
+import getAddress from '../../functionality/getAddress';
 
 const { LiveActivity } = NativeModules;
 
 const StopwatchTimer = () => {
 
     const isFocused = useIsFocused();
+    const [isLoaded, setIsLoaded] = useState(false);
+    const [isStoring, setIsStoring] = useState(false);
+    const [clear, setClear] = useState(false)
 
     const [timerState, setTimerState] = useState({
         isRunning: false,
@@ -31,7 +38,9 @@ const StopwatchTimer = () => {
         elapsedTime: 0,
         restartTime: undefined,
         breakTime: 0,
-        pauseTime: undefined
+        pauseTime: undefined,
+        locationIn: undefined,
+        locationOut: undefined
     });
 
     const [rotationAnimation] = useState(new Animated.Value(0));
@@ -63,6 +72,8 @@ const StopwatchTimer = () => {
                         restartTime: restartTimeDateObj,
                         breakTime: parsedState.breakTime,
                         pauseTime: pauseTimeDateObj,
+                        locationIn: parsedState.locationIn,
+                        locationOut: parsedState.locationOut
                     });
                     
                     let dateReference;
@@ -83,12 +94,13 @@ const StopwatchTimer = () => {
                     })  
                     setIcon(() => {
                         if (parsedState.isFinished == true) {
-                            return '✅';
+                            return '🏁';
                         }
                         else {
                             return '⌛️';
                         }
                     })
+                    setIsLoaded(true);
                 }  
                 else {
                     setTimerState({
@@ -102,10 +114,13 @@ const StopwatchTimer = () => {
                         elapsedTime: 0,
                         restartTime: undefined,
                         breakTime: 0,
-                        pauseTime: undefined
+                        pauseTime: undefined,
+                        locationIn: undefined,
+                        locationOut: undefined,
                     });
                     setElapsedTime(0);
                     setIcon('⌛️');
+                    setIsLoaded(true);
                 }
             } catch (error) {
                 console.log('Error loading timer state:', error);
@@ -114,7 +129,7 @@ const StopwatchTimer = () => {
         if (isFocused) {
             loadTimerState();
         }
-    }, [isFocused]);
+    }, [isFocused, clear]);
 
 
     useEffect(() => {
@@ -137,7 +152,9 @@ const StopwatchTimer = () => {
             }));
             saveTimerState({...timerState, isStored: true});
             console.log("SAVING TO HISTORY");
+            setIsStoring(true)
             storeHours(timerState);
+            setIsStoring(false)
             return;
         }
         else if (timerState.startTime != undefined && timerState.isSaved == false) {
@@ -184,13 +201,15 @@ const StopwatchTimer = () => {
         };
 
         if (timerState.isRunning) {
-            const intervalId = setInterval(rotateIconEvery3Seconds, 3000);
+            const intervalId = setInterval(rotateIconEvery3Seconds, 2000);
             return () => clearInterval(intervalId);
         }
     }, [timerState.isRunning, rotationAnimation, icon]);
 
     const handleToggleTimer = async () => {
         const date = new Date();
+        const location = await getLocation();
+        const addr = await getAddress(location.latitude, location.longitude);
 
         setTimerState(prevState => ({
             ...prevState,
@@ -199,6 +218,11 @@ const StopwatchTimer = () => {
             pauseTime: date,
             isRunning: true,
             isStarted: true,
+            locationIn: {
+                lat: location.latitude,
+                lng: location.longitude,
+                address: addr
+            } 
         }));
 
         if (Platform.OS === 'ios') {
@@ -227,7 +251,9 @@ const StopwatchTimer = () => {
             elapsedTime: elapsedTime,
             pauseTime: date,
         }));
-
+        
+        setIcon('⌛️');
+       
         if (Platform.OS === 'ios') {
             LiveActivity.pauseActivity()
         }
@@ -243,15 +269,20 @@ const StopwatchTimer = () => {
             breakTime: breakT,
         }));
 
+        setIcon('⏳');
+
         if (Platform.OS === 'ios') {
             LiveActivity.restartActivity()
         }
     }
 
     const handleResetTimer = () => {
-        const reset = () => {
+        const reset = async () => {
             const date = new Date();
             const breakT = timerState.breakTime + dateToSec(date) - dateToSec(timerState.pauseTime);
+            //get location and address
+            const location = await getLocation();
+            const addr = await getAddress(location.latitude, location.longitude);
             setTimerState(prevState => ({
                 ...prevState,
                 isRunning: false,
@@ -259,11 +290,14 @@ const StopwatchTimer = () => {
                 finishTime: date,
                 elapsedTime: elapsedTime,
                 breakTime: breakT,
+                locationOut: {
+                    lat: location.latitude,
+                    lng: location.longitude,
+                    address: addr
+                }
             }));
             // Trigger animation
-            setTimeout(() => {
-                setIcon('✅');
-            }, 501)
+            setIcon('🏁');
 
             if (Platform.OS === 'ios') {
                 LiveActivity.endActivity()
@@ -279,6 +313,16 @@ const StopwatchTimer = () => {
         })
     };
 
+    const clearTimer = async () => {
+        try {
+            console.log('resetting timer');
+            await AsyncStorage.removeItem('stopwatchTimerState');
+            setClear((prev => !prev))
+        } catch (err) {
+            console.log('could not clear timer: ', err);
+        }
+    }
+
     const rotateIcon = rotationAnimation.interpolate({
         inputRange: [0, 1],
         outputRange: ['0deg', '360deg'],
@@ -293,75 +337,104 @@ const StopwatchTimer = () => {
 
     return (
         <View>
-            {!timerState.isStarted && !timerState.isFinished &&
-            <View style={{...styles.wrapper}}>
-                    <Text style={styles.text}>
-                        Start your working hours when you are ready. We will keep the time for you.
-                    </Text>
-                {/* <Button
-                    text={'Check in'}
-                    onPress={handleToggleTimer}
-                /> */}
-                <Button 
-                    text={'Check in'}
-                    onPress={handleToggleTimer}
-                />
-            </View>
+            {isLoaded && !timerState.isStarted && !timerState.isFinished &&
+            <StartTimer startTimerFunction={handleToggleTimer}></StartTimer>
             }
-            {timerState.isStarted &&
-            <View style={styles.wrapper}>
-                <Text style={styles.text_checkedIn}>
-                    ⏰You have checked in at {' '}
-                    {timerState.startTime.getHours().toString().padStart(2, '0')}:
-                    {timerState.startTime.getMinutes().toString().padStart(2, '0')}
-                </Text>
-                <Timer text={formatTime(elapsedTime)}></Timer>
-            </View>
-            }
-  
-            <Animated.Text style={[styles.icon, { transform: [{ rotate: rotateIcon,  }] }]}>{icon}</Animated.Text>
-            
-            {timerState.isStarted && !timerState.isFinished && timerState.isRunning &&
-            <View style={styles.wrapper}>
-                <Text style={styles.text}>
-                    When you finish your work you can check out and your hours will be saved.
-                </Text>
-                <Button
-                    text={'II'}
-                    onPress={ handleStopTimer }
-                />
-            </View>
-            }
-            {timerState.isStarted && !timerState.isFinished && !timerState.isRunning &&
-                <View style={styles.wrapper}>
-                    <Text style={styles.text}>
-                        When you finish your work you can check out and your hours will be saved.
-                    </Text>
-                    <View style={{flexDirection: 'row', gap: 10}}>
-                        <Button
-                            text={'End'}
-                            onPress={handleResetTimer}
-                            style={Buttons.secondary_dark}
-                        />
-                        <Button
-                            text={'Resume'}
-                            onPress={handleRestartTimer}
-                            style={Buttons.secondary_light}
-                            textStyle={Buttons.secondary_light_text}
-                        />
+            {isLoaded && timerState.isStarted &&
+            <View style={styles.box_entity}>
+                {timerState.isStarted && !timerState.isFinished &&
+                    <View style={styles.wrapper}>
+                        <Text style={styles.text_checkedIn}>
+                            ⏰You have checked in at {' '}
+                            {timerState.startTime.getHours().toString().padStart(2, '0')}:
+                            {timerState.startTime.getMinutes().toString().padStart(2, '0')}
+                        </Text>
+                        <Text style={styles.text_checkedIn}>
+                            📍{timerState.locationIn.address}
+                        </Text>
                     </View>
+                }
+                {timerState.isFinished &&
+                    <View style={styles.wrapper}>
+                        <Text style={styles.text_checkedIn}>
+                            ⏰{' '}
+                            {timerState.startTime.getHours().toString().padStart(2, '0')}:
+                            {timerState.startTime.getMinutes().toString().padStart(2, '0')}
+                        </Text>
+                        <Text style={styles.text_checkedIn}>
+                            📍{timerState.locationIn.address}
+                        </Text>
+
+                        <Text style={styles.text_checkedIn}>
+                            🏁{' '}
+                            {timerState.finishTime.getHours().toString().padStart(2, '0')}:
+                            {timerState.finishTime.getMinutes().toString().padStart(2, '0')}
+                        </Text>
+                        <Text style={styles.text_checkedIn}>
+                            📍{timerState.locationOut.address}
+                        </Text>
+                    </View>
+                }
+                {timerState.isStarted &&
+                    <Timer text={formatTime(elapsedTime)}></Timer>
+                }
+    
+                <Animated.Text style={[styles.icon, { transform: [{ rotate: rotateIcon,  }] }]}>{icon}</Animated.Text>
+                
+                {timerState.isStarted && !timerState.isFinished && timerState.isRunning &&
+                <View style={styles.wrapper}>
+                    <Button
+                        text={'II'}
+                        onPress={ handleStopTimer }
+                    />
+                    <Text style={styles.text}>
+                        You can always pause or take a break.
+                        {'\n'}When you finish, your hours will be saved.
+                    </Text>
                 </View>
-            }
-            {!timerState.isRunning && timerState.isFinished &&
-            <View style={styles.wrapper}>
-                <Text style={styles.text}>
-                    Your hours have been saved.
-                </Text>
-                <Button
-                    text={'Check out'}
-                    disabled={true}
-                />
+                }
+                {timerState.isStarted && !timerState.isFinished && !timerState.isRunning &&
+                    <View style={styles.wrapper}>
+                        <View style={{flexDirection: 'row', gap: 10}}>
+                            <Button
+                                text={'End'}
+                                onPress={handleResetTimer}
+                                style={{...Buttons.secondary_dark, width: 140}}
+                            />
+                            <Button
+                                text={'Resume'}
+                                onPress={handleRestartTimer}
+                                style={{...Buttons.secondary_light, width: 140}}
+                                textStyle={Buttons.secondary_light_text}
+                            />
+                        </View>
+                        <Text style={styles.text}>
+                                When you finish, your hours will be saved.
+                                {'\n'}Or continue counting when you are ready.
+                        </Text>
+                    </View>
+                }
+                {!timerState.isRunning && timerState.isFinished &&
+                <View style={styles.wrapper}>
+                    <Button
+                        text={'View'}
+                    />
+                </View>
+                }
             </View>
+            }
+            {isLoaded && timerState.isFinished && !timerState.isRunning &&
+                <View style={styles.wrapper}>
+                    <Text style={{...styles.text, marginTop: 0}}>
+                        You can also start counting again.
+                    </Text>
+                    <Button
+                        text={'Start new'}
+                        onPress={clearTimer}
+                        style={{...Buttons.secondary_light, marginTop: 20}}
+                        textStyle={Buttons.secondary_light_text}
+                    />
+                </View>
             }
         </View>
     );
@@ -370,25 +443,38 @@ const StopwatchTimer = () => {
 
 const styles = StyleSheet.create({
     wrapper: {
-        marginTop: 30,
+        marginVertical: 20,
         alignItems: 'center',
-        gap:40,
+        gap:0,
         float: 1,
-        paddingBottom: 50
+        paddingBottom: 0
+    },
+    box_entity: {
+        // paddingTop: 20,
+        // borderWidth: 1,
+        // borderColor: Colors.borderSecondary,
+        // marginHorizontal: 20,
+        // borderRadius: 20,
+        ...Boxes.primary
     },
     text: {
         ...Typo.textLight,
         width:280,
-        textAlign: 'center',
-        color: Colors.textPrimary
+        textAlign: 'left',
+        color: Colors.textPrimary,
+        marginTop: 30
     },
     icon: {
         fontSize: 50,
         alignSelf: 'center',
+        color: Colors.textPrimary
     },
     text_checkedIn: {
         ...Typo.textMedium,
-        color: Colors.textPrimary
+        color: Colors.textPrimary,
+        alignSelf: 'flex-start',
+        marginLeft: 30,
+        marginTop: 5
     }
 })
 

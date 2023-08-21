@@ -33,8 +33,8 @@ export default function TabNavigator() {
             tabBarItemStyle: Navigator.item,
             tabBarLabelStyle: Navigator.label,
             headerStyle: Header.header,
-            headerTitleStyle: Header.header_text,
-            headerShown: false,
+            headerTitleStyle: Header.header_text_dark,
+            headerShown: true,
           }}>
               {/* <Tab.Screen
                   name='Schedule'

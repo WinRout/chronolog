@@ -10,7 +10,8 @@ export const blue = '#0832DE'
 export const mediumGray = '#9C9D9E'
 
 // Text
-export const textPrimary = '#24121C'
+//export const textPrimary = '#24121C'
+export const textPrimary = '#3C3D3E'
 
 // Borders
 export const borderSecondary = '#D6D5D4'

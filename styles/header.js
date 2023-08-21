@@ -8,16 +8,11 @@ export const header = {
     shadowRadius: 5,
     shadowOpacity: 0.5,
     borderColor: Colors.borderSecondary,
-    borderBottomWidth: 1
+    borderBottomWidth: 1,
 }
 
 export const header_text = {
-    fontSize: 18,
-    letterSpacing: 1,
-    fontFamily: "Raleway",
-    fontWeight: 900,
-    textTransform: 'uppercase',
-    textAlign: 'center',
+    ...Typos.pageTitle
 }
 
 export const header_text_dark = {

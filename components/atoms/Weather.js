@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native'
 import { useEffect, useState } from 'react'
 import React from 'react'
 
@@ -7,33 +7,9 @@ import { getWeather } from "../../functionality/getWeather";
 
 import { Typo, Colors } from "../../styles"
 
-const Weather = () => {
+const Weather = ({weathercode=-1, temperature=''}) => {
+    let weather_icon = ''
 
-const [weathercode, setWeathercode] = useState(null);
-const [temperature, setTemperature] = useState(null);
-
-    useEffect(() => {
-        const getLocationAndFetchWeather = async () => {
-            try {
-                const location = await getLocation();
-                console.log('Current Location:', location);
-
-                forecast = await getWeather(location.latitude, location.longitude);
-                console.log('Weather Forecast:', forecast.current_weather);
-                setWeathercode(forecast.current_weather.weathercode)
-                setTemperature(forecast.current_weather.temperature)
-                // Do something with the forecast data
-            } catch (error) {
-                console.log('Error:', error);
-                // Handle the error
-            }
-        };
-
-        getLocationAndFetchWeather();
-    }, []);
-
-    let weather_icon
-    
     if (weathercode == 0) {
         weather_icon = '☀️';
     }
@@ -70,17 +46,56 @@ const [temperature, setTemperature] = useState(null);
     else if (weathercode >= 95 && weathercode <= 99) {
         weather_icon = '⛈️'
     }
-    else {
+    else if (weathercode != -1) {
         weather_icon = '☀️'
     }
 
-  return (
-    <View>
-      <Text style={{fontSize:120}}>{weather_icon}</Text>
-        <Text style={{ ...Typo.textLight, color:Colors.textPrimary ,alignSelf: 'flex-end' }}>{temperature}°C</Text>
+    return (
+    <View style={styles.content_box}>
+        <View style={styles.temperature_position}>
+            <Text style={styles.temperature_text}>{temperature}</Text>
+        </View>
+        <View style={styles.icon_position}>
+            <Text style={styles.icon_text}>{weather_icon}</Text>
+        </View>
     </View>
   )
 }
 
 export default Weather
+
+
+const styles = StyleSheet.create({
+    content_box: {
+        alignSelf: 'flex-start',
+        marginTop: 30,
+        marginLeft: 0,
+        flexDirection: 'row',
+        flex: 1,
+        justifyContent: 'space-between',
+        gap: 120
+    },
+
+    temperature_position: { 
+        alignSelf: 'flex-start'
+    },
+
+    temperature_text: {
+        ...Typo.textLight,
+        coor: Colors.textPrimary
+    },
+
+    icon_position: {
+        alignSelf: 'flex-end',
+        marginTop: -80
+    },
+
+    icon_text: {
+        fontSize: 120,
+        color: Colors.textPrimary,
+        textShadowColor: 'rgba(0, 0, 0, 0.5)',
+        textShadowOffset: { width: 2, height: 2 },
+        textShadowRadius: 6,
+    }
+});
 

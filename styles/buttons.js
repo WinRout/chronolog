@@ -12,6 +12,7 @@ export const primary = {
     borderRadius: 35, 
     borderWidth: 0.50,
     borderColor: Colors.surfacePrimary,
+    alignSelf: 'center'
 }
 
 export const secondary_dark = {
@@ -30,11 +31,11 @@ export const disabled = {
 }
 
 export const primary_text = {
-    ...Typo.headingBold,
+    ...Typo.bold,
     color: 'white'
 }
 
 export const secondary_light_text = {
-    ...Typo.headingBold,
+    ...Typo.bold,
     color: Colors.green,
 }

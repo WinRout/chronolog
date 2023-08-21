@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
   date_text: {
     ...Typo.headingBold,
     padding: 20,
-    marginLeft: 40,
-    color: Colors.dark
+    marginLeft: 30,
+    color: Colors.textPrimary
   },
 });

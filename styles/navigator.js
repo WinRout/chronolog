@@ -12,8 +12,6 @@ export const navigator = {
     height: 'auto',
     borderColor: Colors.borderSecondary,
     borderTopWidth: 1,
-
-
 }
 
 export const item = {
@@ -21,19 +19,22 @@ export const item = {
     borderRightWidth: 1,
     borderColor: Colors.borderSecondary,
     flex:1,
-    paddingBottom:5,
-    paddingTop: 20,
+    paddingBottom:0,
+    paddingTop: 15,
+    marginTop: 10,
+    marginBottom: 20,
+    gap: 18,
 }
 
 export const label = {
     ...Typos.textXXSmall,
     color: Colors.textPrimary,
     marginBottom: 0,
-    marginTop: 10
+    marginBottom: -20,
 }
 
 export const icon = {
-    fontSize: 15,
+    fontSize: 12,
     color: Colors.textPrimary,
 }
 
@@ -43,16 +44,24 @@ export const iconContainer = {
 }
 
 export const circle = {
-    width: 30,
-    height: 30,
+    width: 34,
+    height: 34,
     borderRadius: 25,
     backgroundColor: 'transparent',
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: Colors.borderSecondary,
 }
 
 export const activeCircle = {
     backgroundColor: Colors.yellow,
+    borderWidth: 1,
+    borderColor: Colors.yellow,
+}
+
+export const activeIcon = {
+    textShadowColor: 'rgba(0, 0, 0, 0.8)',
+    textShadowOffset: { width: -1, height: 1 },
+    textShadowRadius: 6
 }

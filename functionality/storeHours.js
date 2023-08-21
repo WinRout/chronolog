@@ -11,6 +11,7 @@ export const storeHours = async (timerState) => {
     const dateOut = timerState.finishTime;
     const elapsedTime = timerState.elapsedTime;
     const breakTime = timerState.breakTime;
+    const locationIn = timerState.locationIn;
 
     try {
         // Fetch the existing array from AsyncStorage
@@ -19,14 +20,28 @@ export const storeHours = async (timerState) => {
         // Parse the retrieved data to get the JavaScript array
         let history = existingData ? JSON.parse(existingData) : {};
 
-        console.log('existing: ', history);
-
         // Append the new JSON data to the array
         try {
             // get current location
             const location = await getLocation();
             const addr = await getAddress(location.latitude, location.longitude);
-            history = { ...history, [dateIn]: { dateOut: dateOut, elapsedTime: elapsedTime, breakTime: breakTime, location: {lat: location.latitude, lng: location.longitude, address: addr} } }
+            const new_item = {
+                [dateIn]: {
+                    dateOut: dateOut,
+                    elapsedTime: elapsedTime,
+                    breakTime: breakTime,
+                    locationIn: locationIn,
+                    location: {
+                        lat: location.latitude,
+                        lng: location.longitude,
+                        address: addr }
+                    }
+            } 
+            console.log('new: ', new_item);
+            history = { 
+                ...history, 
+                ...new_item 
+                }
         } catch(err) {
             console.log('Could not store item. Error getting the location: ' + err);
         }
@@ -34,8 +49,6 @@ export const storeHours = async (timerState) => {
 
         // Stringify the updated array
         const updatedData = JSON.stringify(history);
-
-        console.log('new: ', updatedData);
 
         // Store the updated array back to AsyncStorage
         await AsyncStorage.setItem('hoursHistory', updatedData);

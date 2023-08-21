@@ -15,7 +15,7 @@ export default function Timer({text}) {
 const styles = StyleSheet.create({
     timer_text: {
         ...Typo.headingLargeBold,
-        color: Colors.dark,
+        color: Colors.textPrimary,
     },
     timer_box: {
         alignContent: 'center',

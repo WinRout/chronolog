@@ -13,6 +13,7 @@ import AccountNotifications from '../components/organisms/AccountNotifications'
 import Button from '../components/atoms/Button'
 
 import { generateRandomData } from '../testing/generateRandomData';
+import StartTimer from '../components/molecules/StartTimer';
 
 
 

@@ -6,10 +6,16 @@ export const headingLargeBold = {
 }
 
 export const headingBold = {
-    fontSize: 18,
+    fontSize: 24,
     fontFamily: 'Raleway',
     fontWeight: '700',
     letterSpacing: 0.90
+}
+
+export const bold = {
+    fontSize: 18,
+    fontFamily: 'Inter',
+    fontWeight: '700',
 }
 
 export const textMedium = {
@@ -53,4 +59,12 @@ export const textXXSmall = {
     textTransform: 'uppercase',
     lineHeight: 20,
     letterSpacing: 0.80,
+}
+
+export const pageTitle = {
+    fontSize: 20,
+    fontFamily: 'Raleway',
+    fontWeight: '900',
+    textTransform: 'uppercase',
+    letterSpacing: 2,
 }
