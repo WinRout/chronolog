@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native'
+import { View, Text, StyleSheet, ActivityIndicator, LayoutAnimation } from 'react-native'
 import { useEffect, useState } from 'react'
 import React from 'react'
 
@@ -6,8 +6,11 @@ import { getLocation } from "../../functionality/getLocation";
 import { getWeather } from "../../functionality/getWeather";
 
 import { Typo, Colors } from "../../styles"
+import { Skeleton } from '@rneui/base';
+import { LinearGradient } from 'react-native-svg';
 
 const Weather = ({weathercode=-1, temperature=''}) => {
+    LayoutAnimation.easeInEaseOut();
     let weather_icon = ''
 
     if (weathercode == 0) {
@@ -50,7 +53,17 @@ const Weather = ({weathercode=-1, temperature=''}) => {
         weather_icon = '☀️'
     }
 
-    return (
+    if (weather_icon=='') return (
+        <View style={styles.content_box}>
+            <View style={styles.temperature_position}>
+                <Skeleton animation="pulse" width={49} height={20} />
+            </View>
+            <View style={styles.icon_position}>
+                <Skeleton circle animation="pulse" width={143} height={143}  />
+            </View>
+        </View>
+    )
+    else return (
     <View style={styles.content_box}>
         <View style={styles.temperature_position}>
             <Text style={styles.temperature_text}>{temperature}</Text>

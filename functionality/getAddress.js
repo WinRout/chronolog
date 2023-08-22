@@ -11,5 +11,6 @@ export default getAddress = async(lat, lng) => {
         return address
     } catch (error) {
         console.error('Error geocoding address: ', error)
+        throw error
     }
 }

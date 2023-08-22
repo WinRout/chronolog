@@ -5,7 +5,7 @@ import { Colors, Screens } from "../styles"
 
 // Components
 import CurrentDate from "../components/atoms/CurrentDate";
-import StopwatchTimer from '../components/molecules/StopwatchTimer';
+import StopwatchTimer from '../components/organisms/StopwatchTimer';
 
 const CheckIn = () => {
     return (

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, Animated, NativeModules, Platform } from 'react-native';
+import { View, Text, StyleSheet, Animated, NativeModules, Platform, LayoutAnimation } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useIsFocused } from "@react-navigation/native";
@@ -10,7 +10,7 @@ import Button from '../atoms/Button';
 import Timer from '../atoms/Timer';
 import LongPressButton from '../atoms/LongPressButton';
 
-import StartTimer from './StartTimer';
+import StartTimer from '../molecules/StartTimer';
 
 import { dateToSec } from '../../functionality/mainFunctions';
 import { storeHours } from '../../functionality/storeHours';
@@ -60,7 +60,7 @@ const StopwatchTimer = () => {
                     const finishTimeDateObj = new Date(parsedState.finishTime);
                     const restartTimeDateObj = new Date(parsedState.restartTime);
                     const pauseTimeDateObj = new Date(parsedState.pauseTime);
-                    
+                    LayoutAnimation.easeInEaseOut();
                     setTimerState({
                         isRunning: parsedState.isRunning,
                         isStarted: parsedState.isStarted,
@@ -97,12 +97,14 @@ const StopwatchTimer = () => {
                             return '🏁';
                         }
                         else {
-                            return '⌛️';
+                            if(parsedState.isRunning) return '⏳';
+                            else return '⌛️';
                         }
                     })
                     setIsLoaded(true);
                 }  
                 else {
+                    LayoutAnimation.easeInEaseOut();
                     setTimerState({
                         isRunning: false,
                         isStarted: false,
@@ -177,9 +179,9 @@ const StopwatchTimer = () => {
                 // currentTime = Date()
                 // setElapsedTime(currentTime - timerState.startTime)/1000;
                 const currentTime = Date.now(); // Get the current timestamp in milliseconds
-                const elapsedTimeInSeconds = Math.floor((currentTime - timerState.startTime) / 1000 - timerState.breakTime);
+                const elapsedTimeInSeconds = Math.floor((currentTime - timerState.startTime)/1000 - timerState.breakTime);
                 setElapsedTime(elapsedTimeInSeconds);
-            }, 1000);
+            }, 500);
         } else {
             clearInterval(timerRef.current);
         }
@@ -210,7 +212,7 @@ const StopwatchTimer = () => {
         const date = new Date();
         const location = await getLocation();
         const addr = await getAddress(location.latitude, location.longitude);
-
+        LayoutAnimation.easeInEaseOut();
         setTimerState(prevState => ({
             ...prevState,
             startTime: date,
@@ -224,6 +226,8 @@ const StopwatchTimer = () => {
                 address: addr
             } 
         }));
+        
+        setIcon('⏳')
 
         if (Platform.OS === 'ios') {
             LiveActivity.startActivity(date.toISOString())
@@ -245,13 +249,14 @@ const StopwatchTimer = () => {
 
     const handleStopTimer = () => {
         const date = new Date();
+        LayoutAnimation.easeInEaseOut();
         setTimerState (prevState => ({
             ...prevState,
             isRunning: false,
             elapsedTime: elapsedTime,
             pauseTime: date,
         }));
-        
+       
         setIcon('⌛️');
        
         if (Platform.OS === 'ios') {
@@ -262,13 +267,14 @@ const StopwatchTimer = () => {
     const handleRestartTimer = () => {
         const date = new Date();
         const breakT = timerState.breakTime + dateToSec(date) - dateToSec(timerState.pauseTime);
+        LayoutAnimation.easeInEaseOut();
         setTimerState (prevState => ({
             ...prevState,
             isRunning: true,
             restartTime: date,
             breakTime: breakT,
         }));
-
+   
         setIcon('⏳');
 
         if (Platform.OS === 'ios') {
@@ -283,6 +289,7 @@ const StopwatchTimer = () => {
             //get location and address
             const location = await getLocation();
             const addr = await getAddress(location.latitude, location.longitude);
+            LayoutAnimation.easeInEaseOut();
             setTimerState(prevState => ({
                 ...prevState,
                 isRunning: false,
@@ -345,7 +352,7 @@ const StopwatchTimer = () => {
                 {timerState.isStarted && !timerState.isFinished &&
                     <View style={styles.wrapper}>
                         <Text style={styles.text_checkedIn}>
-                            ⏰You have checked in at {' '}
+                            ⏰You have checked in at{' '}
                             {timerState.startTime.getHours().toString().padStart(2, '0')}:
                             {timerState.startTime.getMinutes().toString().padStart(2, '0')}
                         </Text>
@@ -357,7 +364,7 @@ const StopwatchTimer = () => {
                 {timerState.isFinished &&
                     <View style={styles.wrapper}>
                         <Text style={styles.text_checkedIn}>
-                            ⏰{' '}
+                            ⏰You have checked in at{' '}
                             {timerState.startTime.getHours().toString().padStart(2, '0')}:
                             {timerState.startTime.getMinutes().toString().padStart(2, '0')}
                         </Text>
@@ -366,7 +373,7 @@ const StopwatchTimer = () => {
                         </Text>
 
                         <Text style={styles.text_checkedIn}>
-                            🏁{' '}
+                            🏁You have checked out at{' '}
                             {timerState.finishTime.getHours().toString().padStart(2, '0')}:
                             {timerState.finishTime.getMinutes().toString().padStart(2, '0')}
                         </Text>

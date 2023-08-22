@@ -1,5 +1,6 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { LayoutAnimation, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
+import { Skeleton } from '@rneui/themed';
 
 import Weather from '../atoms/Weather'
 import Button from '../atoms/Button'
@@ -11,6 +12,8 @@ import { getWeather } from '../../functionality/getWeather'
 
 import { Typo, Colors, Buttons } from '../../styles'
 import { useIsFocused } from '@react-navigation/native'
+import { LinearGradient } from 'react-native-svg';
+import previousThursday from 'date-fns/esm/fp/previousThursday/index.js';
 
 const StartTimer = ({startTimerFunction}) => {
 
@@ -21,21 +24,29 @@ const StartTimer = ({startTimerFunction}) => {
     const [temperature, setTemperature] = useState (null)
     const [isLoaded, setIsLoaded] = useState(false)
 
+     
     const setStates = async () => {
-        lcn = await getLocation()
-        addr = await getAddress(lcn.latitude, lcn.longitude)
-        setAddress(addr)
+        try {
+            lcn = await getLocation()
+            try {
+                addr = await getAddress(lcn.latitude, lcn.longitude)
+                setAddress(addr)
+                setIsLoaded(true)
+            } catch (error) {
+                addr = 'Could not fetch address'
+            }
+        }catch (error) {
+            
+        }
         forecast = await getWeather(lcn.latitude, lcn.longitude);
         setWeathercode(forecast.current_weather.weathercode)
         setTemperature(forecast.current_weather.temperature + ' °C')
-        setIsLoaded(true)
     }
     
     useEffect(() => {
       setStates();
     }, [isFocused])
-    
-
+ 
   return (
     <View style={styles.wrapper}>
         <View style={styles.welcome_box}>
@@ -46,8 +57,17 @@ const StartTimer = ({startTimerFunction}) => {
                   {'\n'}We will keep the time and location for you.
                   {'\n'}On your device.
               </Text>
-              <Text style={styles.location_text}>📍 {address}</Text>
+            {isLoaded && 
+            <Text style={styles.location_text}>📍 {address}</Text>  
+            }
+            {!isLoaded &&
+            <View style={{...styles.location_text, flexDirection:'row'}}>
+                <Text>📍{'   '}</Text>
+                <Skeleton animation="pulse" width={200} height={20} />
+            </View>
+            }
         </View>
+
         <View style={styles.start_box}>
               <Button
                   text={'Start'}
