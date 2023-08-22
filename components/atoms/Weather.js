@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
 
     temperature_text: {
         ...Typo.textLight,
-        coor: Colors.textPrimary
+        color: Colors.textPrimary
     },
 
     icon_position: {

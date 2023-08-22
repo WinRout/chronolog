@@ -52,7 +52,6 @@ export const textXSmall = {
 }
 
 export const textXXSmall = {
-    color: 'black',
     fontSize: 8,
     fontFamily: 'Inter',
     fontWeight: '700',
