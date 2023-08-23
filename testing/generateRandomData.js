@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { UpdateDB } from '../database';
 
 export const generateRandomData = async () => {
     // Function to generate a random elapsed time
@@ -6,37 +7,36 @@ export const generateRandomData = async () => {
         return Math.floor(Math.random() * (32401 - 1700) + 1700);
     }
 
-    // Function to generate random location data
-    function generateLocationData() {
-        return {
-            altitude: 0,
-            heading: -1,
-            altitudeAccuracy: -1,
-            latitude: getRandomCoordinate(37.785, 37.786),
-            longitude: getRandomCoordinate(-122.407, -122.405),
-            accuracy: 5,
-            speed: -1
-        };
-    }
-
     // Function to generate dummy data
-    function generateDummyData() {
+    // const generateDummyData = async() => {
+    //     const data = {};
+    //     const endDate = new Date("2023-07-31T09:00:00+03:00");
+
+    //     for (let i = 0; i <=500; i++) {
+    //         const timestamp = new Date(endDate.getTime() - i * 24 * 60 * 60 * 1000).toString();
+    //         const elapsed = generateRandomElapsedTime();
+    //         data[timestamp] = {
+    //             dateOut: new Date(endDate.getTime() + 1*60*60*1000+ + elapsed * 1000).toISOString(),
+    //             elapsedTime: elapsed,
+    //             location: {address: 'Test Address'}
+    //         };
+    //         console.log(elapsed)
+    //         await UpdateDB.insertHourEntry(timestamp, endDate, 'Home', 'Office', elapsed, 0)
+    //     }
+    //     return data;
+    // }
+
+    const generateDummyData = async () => {
         const data = {};
-        const endDate = new Date("2023-07-31T09:00:00+03:00");
+        const endDate = new Date("2019-07-31T09:00:00+03:00");
 
-        for (let i = 0; i <=500; i++) {
-            const timestamp = new Date(endDate.getTime() - i * 24 * 60 * 60 * 1000).toString();
+        for (let i = 0; i <= 500; i++) {
+            const timestamp = new Date(endDate.getTime() - i * 24 * 60 * 60 * 1000);
             const elapsed = generateRandomElapsedTime();
-            data[timestamp] = {
-                dateOut: new Date(endDate.getTime() + 1*60*60*1000+ + elapsed * 1000).toISOString(),
-                elapsedTime: elapsed,
-                location: {address: 'Test Address'}
-            };
+            await UpdateDB.insertHourEntry(timestamp, endDate, 'Home', 'Office', elapsed, 0)
         }
-
         return data;
     }
-
 
     // Generate dummy data
     const dummyData = generateDummyData();
@@ -48,5 +48,4 @@ export const generateRandomData = async () => {
     } catch (error) {
         console.log('Error appending hours history item to storage: ', error);
     }
-
 }

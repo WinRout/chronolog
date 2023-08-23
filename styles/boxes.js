@@ -3,9 +3,9 @@ import * as Typo from './typography'
 
 export const primary = {
     shadowColor: '#171717',
-    shadowOffset: { width: -2, height: 4 },
+    shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.2,
-    shadowRadius: 3,
+    shadowRadius: 5,
     borderRadius: 20,
     borderColor: Colors.borderSecondary,
     borderWidth: 1,

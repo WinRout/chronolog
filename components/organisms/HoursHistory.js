@@ -10,7 +10,7 @@ import { categorizeItems } from '../../functionality/categorizeItems';
 import { Boxes, Colors, Typo } from '../../styles';
 
 import HoursItem from '../molecules/HoursItem';
-import TotalTime from '../molecules/TotalTime';
+import TotalTime from '../atoms/TotalTime';
 
 import WeekItem from '../molecules/WeekItem';
 
@@ -67,7 +67,7 @@ const HoursHistory = ({year, weekNo, fullTotal=false}) => {
 
   return (
         <View >
-            <TotalTime time={formatTime(totalTime)}></TotalTime>
+            <TotalTime time={totalTime}></TotalTime>
             { !fullTotal &&
             <View style={{...Boxes.primary, ...styles.historyTable}}>
                 {/* <Text style={{ ...Typo.textXSmall, marginLeft: 10, marginTop: 25 }}>WEEK #25:</Text> */}

@@ -9,16 +9,19 @@ import {Screens} from "../styles"
 
 //Components
 import HoursHistory from '../components/organisms/HoursHistory'
+import DayHistory from "../components/organisms/DayHistory";
 
 const Stack = createNativeStackNavigator();
 
 const MainScreen = () => {
     const currentDate = new Date();
     const currentWeekNo = getISOWeek(currentDate);
+
     return (
         <ScrollView style={Screens.primary}>
             <View style={Screens.primary}>
-                <HoursHistory weekNo={currentWeekNo} fullTotal={true}></HoursHistory>
+                {/* <HoursHistory weekNo={currentWeekNo} fullTotal={true}></HoursHistory> */}
+                <DayHistory dayString={'2023-08-23'}></DayHistory>
             </View>
         </ScrollView>
     )

@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { getLocation } from './getLocation';
 import getAddress from './getAddress';
+import { UpdateDB } from '../database';
 
 
 export const storeHours = async (timerState) => {
@@ -20,11 +21,15 @@ export const storeHours = async (timerState) => {
         // Parse the retrieved data to get the JavaScript array
         let history = existingData ? JSON.parse(existingData) : {};
 
+
         // Append the new JSON data to the array
         try {
             // get current location
             const location = await getLocation();
             const addr = await getAddress(location.latitude, location.longitude);
+
+            UpdateDB.insertHourEntry(dateIn, dateOut, locationIn.address, addr, elapsedTime, breakTime)
+
             const new_item = {
                 [dateIn]: {
                     dateOut: dateOut,

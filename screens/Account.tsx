@@ -14,6 +14,7 @@ import Button from '../components/atoms/Button'
 
 import { generateRandomData } from '../testing/generateRandomData';
 import StartTimer from '../components/molecules/StartTimer';
+import { SelectDB, UpdateDB } from '../database';
 
 
 
@@ -23,6 +24,7 @@ const Account = () => {
             try {
                 console.log('clearing data');
                 await AsyncStorage.setItem('hoursHistory', '{}');
+                UpdateDB.clearHistory();
             } catch (err) {
                 console.log('could not reset history: ', err);
             }
@@ -52,6 +54,18 @@ const Account = () => {
         })
     }
 
+    const showEntries = () => {
+        SelectDB.getTotalEntries()
+            .then(rows => {
+                // Handle the rows here
+                console.log(rows);
+            })
+            .catch(error => {
+                // Handle errors here
+                console.error(error);
+            });
+    }
+
     
     return (
         <ScrollView style={Screens.primary}>
@@ -63,6 +77,7 @@ const Account = () => {
                     <Button text={'Reset Timer'} onPress={resetTimer}></Button>
                     <Button text={'Clear History'} onPress={resetHistory}></Button>    
                     <Button text={'Testing'} onPress={generateRandomData}></Button> 
+                    <Button text={'Show total'} onPress={showEntries}/>
                 </View>
             </View>
         </ScrollView>
