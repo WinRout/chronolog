@@ -60,7 +60,7 @@ const DayHistory = ({dayString}) => {
                 <View style={styles.entries_position}>
                     {console.log(entries)}
                     {entries.map(entry => {
-                        return <HoursItem
+                        return <HoursItem key={entry.dateIn}
                             dateIn={entry.dateIn}
                             dateOut={entry.dateOut}
                             locationIn={entry.locationIn}
@@ -79,7 +79,8 @@ export default DayHistory
 const styles = StyleSheet.create({
     wrapper: {
         gap: 10,
-        marginLeft: 30
+        marginLeft: 30,
+        paddingBottom: 50
     },
     entries_position: {
         marginHorizontal: 20,

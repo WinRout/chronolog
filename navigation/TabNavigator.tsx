@@ -1,4 +1,3 @@
-import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
 import TabBarIcon from "../components/atoms/TabBarIcon"
@@ -13,7 +12,6 @@ import ScheduleScreen from '../screens/Schedule';
 import AccountScreen from '../screens/Account';
 import YourHoursScreen from '../screens/YourHours';
 import CheckInScreen from '../screens/CheckIn';
-import { Screen } from 'react-native-screens';
 
 export type RootStackParamList = {
     Schedule: undefined;

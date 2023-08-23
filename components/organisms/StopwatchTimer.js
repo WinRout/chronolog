@@ -20,7 +20,7 @@ import getAddress from '../../functionality/getAddress';
 
 const { LiveActivity } = NativeModules;
 
-const StopwatchTimer = () => {
+const StopwatchTimer = ({navigation}) => {
 
     const isFocused = useIsFocused();
     const [isLoaded, setIsLoaded] = useState(false);
@@ -131,7 +131,7 @@ const StopwatchTimer = () => {
         if (isFocused) {
             loadTimerState();
         }
-    }, [isFocused, clear]);
+    }, [clear]);
 
 
     useEffect(() => {
@@ -155,7 +155,7 @@ const StopwatchTimer = () => {
             saveTimerState({...timerState, isStored: true});
             console.log("SAVING TO HISTORY");
             setIsStoring(true)
-            storeHours(timerState);
+            storeHours(timerState)
             setIsStoring(false)
             return;
         }
@@ -211,7 +211,11 @@ const StopwatchTimer = () => {
     const handleToggleTimer = async () => {
         const date = new Date();
         const location = await getLocation();
-        const addr = await getAddress(location.latitude, location.longitude);
+        try {
+            const addr = await getAddress(location.latitude, location.longitude);
+        } catch(error) {
+            addr = 'Unknown'
+        }
         LayoutAnimation.easeInEaseOut();
         setTimerState(prevState => ({
             ...prevState,
@@ -288,7 +292,11 @@ const StopwatchTimer = () => {
             const breakT = timerState.breakTime + dateToSec(date) - dateToSec(timerState.pauseTime);
             //get location and address
             const location = await getLocation();
-            const addr = await getAddress(location.latitude, location.longitude);
+            try {
+                const addr = await getAddress(location.latitude, location.longitude);
+            } catch(error) {
+                const addr = 'Unknwon'
+            }
             LayoutAnimation.easeInEaseOut();
             setTimerState(prevState => ({
                 ...prevState,
@@ -341,6 +349,10 @@ const StopwatchTimer = () => {
         const seconds = time % 60;
         return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     };
+
+    const navigateFun = () => {
+        navigation.navigate('YourHours', { screen: 'Today' })
+    }
 
     return (
         <View>
@@ -425,6 +437,7 @@ const StopwatchTimer = () => {
                 <View style={styles.wrapper}>
                     <Button
                         text={'View'}
+                        onPress = {navigateFun}
                     />
                 </View>
                 }

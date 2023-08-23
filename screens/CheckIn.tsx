@@ -7,12 +7,12 @@ import { Colors, Screens } from "../styles"
 import CurrentDate from "../components/atoms/CurrentDate";
 import StopwatchTimer from '../components/organisms/StopwatchTimer';
 
-const CheckIn = () => {
+const CheckIn = ({navigation}) => {
     return (
         <ScrollView style={{backgroundColor: Colors.surfacePrimary}}>
             <View style={Screens.checkin}>
                 <CurrentDate></CurrentDate>
-                <StopwatchTimer></StopwatchTimer>
+                <StopwatchTimer navigation={navigation}></StopwatchTimer>
             </View>
         </ScrollView>
     )

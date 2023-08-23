@@ -1,5 +1,5 @@
 import { getISOWeek } from "date-fns";
-import { StyleSheet, View, ScrollView } from 'react-native'
+import { StyleSheet, View, ScrollView, Text } from 'react-native'
 import React from 'react'
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -9,7 +9,7 @@ import {Screens} from "../styles"
 
 //Components
 import HoursHistory from '../components/organisms/HoursHistory'
-import DayHistory from "../components/organisms/DayHistory";
+import TimelineTabs from "../navigation/TopTabsNavigator";
 
 const Stack = createNativeStackNavigator();
 
@@ -18,12 +18,7 @@ const MainScreen = () => {
     const currentWeekNo = getISOWeek(currentDate);
 
     return (
-        <ScrollView style={Screens.primary}>
-            <View style={Screens.primary}>
-                {/* <HoursHistory weekNo={currentWeekNo} fullTotal={true}></HoursHistory> */}
-                <DayHistory dayString={'2023-08-23'}></DayHistory>
-            </View>
-        </ScrollView>
+        <TimelineTabs/>
     )
 }
 
@@ -43,26 +38,27 @@ const WeekScreen = () => {
 
 const YourHours = () => {
     return (
-    <Stack.Navigator initialRouteName="Full Total"
-    screenOptions={{
-        headerShown: true,
-        headerBackTitleVisible: false,
-    }}>
-        <Stack.Screen
-            name="Full Total"
-            component={MainScreen}
-            options={{
-                headerShown: false
-            }}
-        />
-        <Stack.Screen
-            name="Week Total" 
-            component={WeekScreen}
-            options={({ route }) => ({
-                title: 'Week #' + route.params.weekNo.toString() + ' - ' + route.params.year.toString()
-            })}
-        />
-    </Stack.Navigator>
+    // <Stack.Navigator initialRouteName="Full Total"
+    // screenOptions={{
+    //     headerShown: true,
+    //     headerBackTitleVisible: false,
+    // }}>
+    //     <Stack.Screen
+    //         name="Full Total"
+    //         component={MainScreen}
+    //         options={{
+    //             headerShown: false
+    //         }}
+    //     />
+    //     <Stack.Screen
+    //         name="Week Total" 
+    //         component={WeekScreen}
+    //         options={({ route }) => ({
+    //             title: 'Week #' + route.params.weekNo.toString() + ' - ' + route.params.year.toString()
+    //         })}
+    //     />
+    // </Stack.Navigator>
+    <MainScreen></MainScreen>
 )}
 export default YourHours
 

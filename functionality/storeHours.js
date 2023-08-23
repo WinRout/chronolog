@@ -13,6 +13,7 @@ export const storeHours = async (timerState) => {
     const elapsedTime = timerState.elapsedTime;
     const breakTime = timerState.breakTime;
     const locationIn = timerState.locationIn;
+    const locationOut = timerState.locationOut;
 
     try {
         // Fetch the existing array from AsyncStorage
@@ -25,10 +26,7 @@ export const storeHours = async (timerState) => {
         // Append the new JSON data to the array
         try {
             // get current location
-            const location = await getLocation();
-            const addr = await getAddress(location.latitude, location.longitude);
-
-            UpdateDB.insertHourEntry(dateIn, dateOut, locationIn.address, addr, elapsedTime, breakTime)
+            UpdateDB.insertHourEntry(dateIn, dateOut, locationIn.address, locationOut.address, elapsedTime, breakTime)
 
             const new_item = {
                 [dateIn]: {

@@ -12,8 +12,6 @@ import { getWeather } from '../../functionality/getWeather'
 
 import { Typo, Colors, Buttons } from '../../styles'
 import { useIsFocused } from '@react-navigation/native'
-import { LinearGradient } from 'react-native-svg';
-import previousThursday from 'date-fns/esm/fp/previousThursday/index.js';
 
 const StartTimer = ({startTimerFunction}) => {
 
@@ -45,7 +43,7 @@ const StartTimer = ({startTimerFunction}) => {
     
     useEffect(() => {
       setStates();
-    }, [isFocused])
+    }, [])
  
   return (
     <View style={styles.wrapper}>

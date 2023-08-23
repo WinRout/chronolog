@@ -5,7 +5,6 @@ import { Typo, Colors } from "../../styles"
 
 export default function Timer({text, small=false}) {
     
-    
     if (!small) return (
         <View style={styles.timer_box}>
             <Text style={styles.timer_text}>{text}</Text>
