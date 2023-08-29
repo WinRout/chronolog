@@ -7,20 +7,7 @@ import HoursItem from '../molecules/HoursItem'
 import { Boxes, Colors, Typo } from '../../styles'
 import WeekItem from '../molecules/WeekItem'
 
-const YearHistory = ({ yearString }) => {
-
-    const dayStringTransformation = (inputDate) => {
-        const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
-        const date = new Date(inputDate);
-        const dayOfWeek = daysOfWeek[date.getDay()];
-        const dayOfMonth = date.getDate();
-        const month = months[date.getMonth()];
-        const year = date.getFullYear();
-
-        return `${month}`;
-    }
+const AllHistory = () => {
 
     const isFocused = useIsFocused();
     const [isLoading, setIsLoading] = useState(true)
@@ -29,17 +16,16 @@ const YearHistory = ({ yearString }) => {
 
     useEffect(() => {
         // Get total time
-        SelectDB.getYearTotal(yearString)
+        SelectDB.getAllTotal()
             .then(result => {
                 LayoutAnimation.spring()
                 setTotalTime(result)
-                setIsLoading(false)
             })
             .catch(error => {
                 console.error(error);
             });
 
-        SelectDB.getYearMonths(yearString)
+        SelectDB.getAllYears()
             .then(queryResult => {
                 const resultArray = Array.from({ length: queryResult.length }, (_, index) => queryResult.item(index));
                 LayoutAnimation.spring()
@@ -61,12 +47,12 @@ const YearHistory = ({ yearString }) => {
                 <TotalTime time={totalTime}></TotalTime>
 
                 <View style={styles.date_position}>
-                    <Text style={styles.date_text}>{yearString}</Text>
+                    <Text style={styles.date_text}>All Time</Text>
                 </View>
             </View>
             <View style={styles.entries_position}>
                 {entries.map(entry => {
-                    return <WeekItem day={dayStringTransformation(entry.year_month)} totalTime={entry.total_time} />
+                    return <WeekItem day={entry.year} totalTime={entry.total_time} />
                 })}
             </View>
         </View>
@@ -75,7 +61,7 @@ const YearHistory = ({ yearString }) => {
     )
 }
 
-export default YearHistory
+export default AllHistory
 
 const styles = StyleSheet.create({
     wrapper: {

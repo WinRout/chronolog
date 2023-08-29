@@ -9,7 +9,7 @@ export const primary = {
     borderRadius: 20,
     borderColor: Colors.borderSecondary,
     borderWidth: 1,
-    width: "85%",
+    width: "95%",
     backgroundColor: Colors.surfacePrimary,
     alignSelf: 'center',
 }

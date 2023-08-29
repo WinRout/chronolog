@@ -28,7 +28,7 @@ export const generateRandomData = async () => {
 
     const generateDummyData = async () => {
         const data = {};
-        const endDate = new Date("2023-09-23T09:00:00+03:00");
+        const endDate = new Date("2020-09-23T09:00:00+03:00");
 
         for (let i = 0; i <= 500; i++) {
             const timestamp = new Date(endDate.getTime() - i * 24 * 60 * 60 * 100);

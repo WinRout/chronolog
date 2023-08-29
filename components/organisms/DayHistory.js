@@ -1,10 +1,11 @@
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, LayoutAnimation, StyleSheet, Text, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import TotalTime from '../atoms/TotalTime'
 import { SelectDB } from '../../database'
 import { useIsFocused } from '@react-navigation/native'
 import HoursItem from '../molecules/HoursItem'
 import { Boxes, Colors, Typo } from '../../styles'
+import { Layout } from 'react-native-reanimated'
 
 const DayHistory = ({dayString}) => {
 
@@ -29,6 +30,7 @@ const DayHistory = ({dayString}) => {
         // Get total time
         SelectDB.getDayTotal(dayString)
             .then(result => {
+                LayoutAnimation.spring()
                 setTotalTime(result)
             })
             .catch(error => {
@@ -39,6 +41,7 @@ const DayHistory = ({dayString}) => {
         SelectDB.getDayEntries(dayString)
             .then(queryResult => {
                 const resultArray = Array.from({ length: queryResult.length }, (_, index) => queryResult.item(index));
+                LayoutAnimation.spring()
                 setEntries(resultArray)
                 setIsLoading(false)
             })
@@ -53,7 +56,7 @@ const DayHistory = ({dayString}) => {
     else return (
         <View style={styles.wrapper}>
             <TotalTime time={totalTime}></TotalTime>
-            <View style={{...Boxes.primary, width:'92%', marginLeft: -30}}>
+            <View style={{...Boxes.primary, width:'95%', marginLeft: -30}}>
                 <View style={styles.date_position}>
                     <Text style={styles.date_text}>{dayStringTransformation(dayString)}</Text>
                 </View>

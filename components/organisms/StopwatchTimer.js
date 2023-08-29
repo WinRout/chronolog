@@ -53,7 +53,6 @@ const StopwatchTimer = ({navigation}) => {
         const loadTimerState = async () => {
             try {
                 const storedState = await AsyncStorage.getItem('stopwatchTimerState');
-                console.log("loaded: ", storedState)
                 if (storedState != null) {
                     const parsedState = JSON.parse(storedState);
                     const startTimeDateObj = new Date (parsedState.startTime);
@@ -318,19 +317,20 @@ const StopwatchTimer = ({navigation}) => {
                 LiveActivity.endActivity()
             }
         }
-        twoButtonAlert({
-            title: 'Alert', 
-            message: 'Are you sure you want to check out?',
-            button1_text: 'Yes',
-            button1_onPress: reset,
-            button2_text: 'No',
-            button2_onPress: null,
-        })
+        reset();
+        // twoButtonAlert({
+        //     title: 'Alert', 
+        //     message: 'Are you sure you want to check out?',
+        //     button1_text: 'Yes',
+        //     button1_onPress: reset,
+        //     button2_text: 'No',
+        //     button2_onPress: null,
+        // })
     };
 
     const clearTimer = async () => {
         try {
-            console.log('resetting timer');
+            console.log('reseting timer');
             await AsyncStorage.removeItem('stopwatchTimerState');
             setClear((prev => !prev))
         } catch (err) {

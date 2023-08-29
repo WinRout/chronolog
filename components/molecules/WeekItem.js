@@ -3,22 +3,20 @@ import React from 'react'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { useNavigation } from '@react-navigation/native';
 
-import { Typo, Colors } from '../../styles'
+import { Typo, Colors, Boxes } from '../../styles'
+import TotalTime from '../atoms/TotalTime';
 
 
-const WeekItem = ({year, weekNo}) => {
-
-const navigation = useNavigation();
+const WeekItem = ({day, totalTime=0}) => {
+//const navigation = useNavigation();
 const handleWeekPress = () => {
-    navigation.navigate('Week Total', { year: year, weekNo: weekNo })
+   // navigation.navigate('Week Total', { year: year, weekNo: weekNo })
 }
 
   return (
-    <TouchableOpacity onPress={handleWeekPress} style={styles.item}>
-        <Text style={{...Typo.textXSmall}}>week #{weekNo}</Text>
-        <TouchableOpacity style={styles.button}>
-            <Text style={styles.button_text}>{'>'}</Text>
-        </TouchableOpacity>
+    <TouchableOpacity onPress={null} style={styles.item}>
+        <Text style={styles.day_text}>{day}</Text>
+        <TotalTime time={totalTime} small={true}></TotalTime>
     </TouchableOpacity>
   )
 }
@@ -28,17 +26,20 @@ export default WeekItem
 const styles = StyleSheet.create({
     item: {
         padding: 20,
-        paddingBottom: 10,
-        borderColor: Colors.mediumGray,
+        borderColor: Colors.borderSecondary,
         borderBottomWidth: 1,
-        marginLeft: 40,
-        marginRight: 40,
-        marginTop: 20,
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        ...Boxes.primary
     },
     button: {
        
+    },
+    day_text: {
+        ...Typo.textMedium,
+        fontSize: 18,
+        width: '50%'
     },
     button_text: {
         ...Typo.textXSmall,
