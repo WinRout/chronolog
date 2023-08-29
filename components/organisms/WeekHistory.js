@@ -6,6 +6,8 @@ import { useIsFocused } from '@react-navigation/native'
 import HoursItem from '../molecules/HoursItem'
 import { Boxes, Colors, Typo } from '../../styles'
 import WeekItem from '../molecules/WeekItem'
+import { formatWeek } from '../../functionality/mainFunctions'
+import DayHistory from './DayHistory'
 
 const WeekHistory = ({ weekString }) => {
 
@@ -41,7 +43,7 @@ const WeekHistory = ({ weekString }) => {
             .then(queryResult => {
                 const resultArray = Array.from({ length: queryResult.length }, (_, index) => queryResult.item(index));
                 setEntries(resultArray)
-                console.log(resultArray)
+                // console.log(resultArray)
                 setIsLoading(false)
             })
             .catch(error => {
@@ -50,6 +52,7 @@ const WeekHistory = ({ weekString }) => {
 
     }, [isFocused])
 
+
     if (isLoading) return (<ActivityIndicator size="large" style={{ alignSelf: 'center', height: 200 }} />)
 
     else return (
@@ -57,13 +60,14 @@ const WeekHistory = ({ weekString }) => {
         <View style={styles.wrapper}>
             <TotalTime time={totalTime}></TotalTime>
     
-                <View style={styles.date_position}>
-                    <Text style={styles.date_text}>{weekString}</Text>
-                </View>
+                {/* <View style={styles.date_position}>
+                    <Text style={styles.date_text}>{formatWeek(weekString)}</Text>
+                </View> */}
         </View>
                 <View style={styles.entries_position}>
                    {entries.map(entry => {
-                    return <WeekItem day={dayStringTransformation(entry.day)} totalTime={entry.total_time}/>
+                    console.log(entry)
+                    return <DayHistory key={entry.day} dayString={entry.day} mainScreen={false}/>
                    })}
                 </View>
         </View>
@@ -81,9 +85,9 @@ const styles = StyleSheet.create({
         paddingBottom: 20
     },
     entries_position: {
-        marginHorizontal: 20,
+        marginHorizontal: 0,
         marginTop: 10,
-        gap: 15
+        gap: 0
     },
     date_position: {
         marginHorizontal: 20,

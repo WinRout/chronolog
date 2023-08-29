@@ -35,10 +35,23 @@ export const dateToTimeStr = (date) => {
     return timeString;
 }
 
-export const formatTime = (time: number) => {
+export const formatTime = (time) => {
     const hours = Math.floor(time / 3600);
     const minutes = Math.floor(time / 60) % 60;
     const seconds = time % 60;
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 };
+
+export const formatWeek = (weekRange) => {
+    const [year, week] = weekRange.split('-');
+
+    const startOfWeek = new Date(year, 0, (week - 1) * 7 + 2);
+    const endOfWeek = new Date(year, 0, (week - 1) * 7 + 8);
+
+    const options = { day: 'numeric', month: 'short' };
+    const formattedStart = startOfWeek.toLocaleDateString('en-US', options);
+    const formattedEnd = endOfWeek.toLocaleDateString('en-US', options);
+
+    return `${formattedStart} - ${formattedEnd}`;
+}
 

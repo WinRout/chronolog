@@ -7,7 +7,7 @@ import HoursItem from '../molecules/HoursItem'
 import { Boxes, Colors, Typo } from '../../styles'
 import { Layout } from 'react-native-reanimated'
 
-const DayHistory = ({dayString}) => {
+const DayHistory = ({dayString, mainScreen=true}) => {
 
     const dayStringTransformation = (inputDate) => {
         const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -55,7 +55,9 @@ const DayHistory = ({dayString}) => {
     
     else return (
         <View style={styles.wrapper}>
+            { mainScreen &&
             <TotalTime time={totalTime}></TotalTime>
+            }
             <View style={{...Boxes.primary, width:'95%', marginLeft: -30}}>
                 <View style={styles.date_position}>
                     <Text style={styles.date_text}>{dayStringTransformation(dayString)}</Text>

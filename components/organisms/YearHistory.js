@@ -59,10 +59,9 @@ const YearHistory = ({ yearString }) => {
         <View>
             <View style={styles.wrapper}>
                 <TotalTime time={totalTime}></TotalTime>
-
-                <View style={styles.date_position}>
+                {/* <View style={styles.date_position}>
                     <Text style={styles.date_text}>{yearString}</Text>
-                </View>
+                </View> */}
             </View>
             <View style={styles.entries_position}>
                 {entries.map(entry => {

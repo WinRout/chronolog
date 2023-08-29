@@ -70,6 +70,8 @@ const AllScreen = () => {
 }
 
 function TimelineTabs() {
+    const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const currentDate = new Date();
     return (
         <Tab.Navigator
         initialRouteName='Today'
@@ -78,8 +80,8 @@ function TimelineTabs() {
         sceneContainerStyle={Screens.primary}
         screenOptions={{
             swipeEnabled: true,
-            tabBarStyle: { marginTop: 10, alignSelf:'center', borderWidth: 1, borderColor:'#B2B2B2', borderRadius: 30, width:'90%'},
-            tabBarLabelStyle: { ...Typo.textLight, textTransform: 'none'},
+            tabBarStyle: { marginTop: 10, alignSelf:'center', borderWidth: 1, borderColor:'#B2B2B2', borderRadius: 30, width:'95%'},
+            tabBarLabelStyle: { ...Typo.textLight, textTransform: 'none', width:'100%'},
             tabBarItemStyle: {},
             tabBarContentContainerStyle:{justifyContent:'center'},
             tabBarIndicatorContainerStyle: {alignSelf: 'center', justifyContent: 'center', width:'55%', marginLeft: '5%'},
@@ -87,10 +89,10 @@ function TimelineTabs() {
             tabBarActiveTintColor: Colors.textPrimary,
         }}
         >
-            <Tab.Screen name="Today" component={TodayScreen} />
-            <Tab.Screen name="Week" component={WeekScreen} />
-            <Tab.Screen name="Month" component={MonthScreen} />
-            <Tab.Screen name="Year" component={YearScreen} />
+            <Tab.Screen name="Today" component={TodayScreen} options={{title: 'Today'}}/>
+            <Tab.Screen name="Week" component={WeekScreen} options={{ title: 'Week' }} />
+            <Tab.Screen name="Month" component={MonthScreen} options={{ title: month[currentDate.getMonth()] }} />
+            <Tab.Screen name="Year" component={YearScreen} options={{ title: String(currentDate.getFullYear()) }} />
             <Tab.Screen name="All" component={AllScreen} />
         </Tab.Navigator>
     );

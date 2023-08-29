@@ -16,22 +16,24 @@ const TotalTime = ({time, small=false}) => {
         const hours_thousands = Math.floor(hours/1000);
         const hours_houndreds = hours%1000;
 
-        let result = '';
+        let daysStr = ''
+        let hoursStr = ''
+        let minutesStr = ''
         if (days > 0) {
-            result += days + 'd ';
+            daysStr = days + 'd ';
         }
         
         if (hours > 0) {
-            result += hours + 'h ';
+            hoursStr += hours + 'h ';
         }
         if (minutes > 0) {
-            result += minutes + 'm';
+            minutesStr += minutes + 'm';
         }
-        if (result === '') {
-            result = '0m';
+        if (days == 0 && hours == 0 && minutes == 0) {
+            minutesStr = '0m';
         }
 
-        return result.trim();
+        return `${daysStr}${hoursStr}${minutesStr}`
     }
 
     timeString = formatTime(time)

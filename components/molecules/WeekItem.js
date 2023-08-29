@@ -7,14 +7,14 @@ import { Typo, Colors, Boxes } from '../../styles'
 import TotalTime from '../atoms/TotalTime';
 
 
-const WeekItem = ({day, totalTime=0}) => {
+const WeekItem = ({day, totalTime=0, onPress=null}) => {
 //const navigation = useNavigation();
 const handleWeekPress = () => {
    // navigation.navigate('Week Total', { year: year, weekNo: weekNo })
 }
 
   return (
-    <TouchableOpacity onPress={null} style={styles.item}>
+    <TouchableOpacity onPress={onPress} style={styles.item}>
         <Text style={styles.day_text}>{day}</Text>
         <TotalTime time={totalTime} small={true}></TotalTime>
     </TouchableOpacity>
@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     day_text: {
         ...Typo.textMedium,
         fontSize: 18,
-        width: '50%'
+        width: '60%'
     },
     button_text: {
         ...Typo.textXSmall,

@@ -7,6 +7,9 @@ import HoursItem from '../molecules/HoursItem'
 import { Boxes, Colors, Typo } from '../../styles'
 import WeekItem from '../molecules/WeekItem'
 import { Layout } from 'react-native-reanimated'
+import { formatWeek } from '../../functionality/mainFunctions'
+import WeekHistory from './WeekHistory'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const MonthHistory = ({ monthString }) => {
 
@@ -27,6 +30,11 @@ const MonthHistory = ({ monthString }) => {
     const [isLoading, setIsLoading] = useState(true)
     const [totalTime, setTotalTime] = useState(0)
     const [entries, setEntries] = useState([])
+
+    const [weekTotal, setWeekTotal] = useState(0)
+    const [weekComponent, setWeekComponent] = useState(null)
+
+    const [weekOn, setWeekOn] = useState(false)
 
     useEffect(() => {
         // Get total time
@@ -54,6 +62,28 @@ const MonthHistory = ({ monthString }) => {
 
     }, [isFocused])
 
+  
+    const weekPress = (weekString) => {
+        console.log('press')
+        SelectDB.getWeekTotal(weekString)
+            .then(result => {
+                setWeekTotal(result)
+                LayoutAnimation.easeInEaseOut()
+                setWeekComponent(
+                    <View>
+                        <View style={styles.date_position}>
+                            <Text style={styles.date_text}>{formatWeek(weekString)}</Text>
+                        </View>
+                        <WeekHistory weekString={weekString} mainScreen={false} />
+                    </View>
+                )
+                setWeekOn(true)
+            })
+            .catch(error => {
+                console.error(error);
+            })
+    }
+
     if (isLoading) return (<ActivityIndicator size="large" style={{ alignSelf: 'center', height: 200 }} />)
 
     else return (
@@ -61,18 +91,23 @@ const MonthHistory = ({ monthString }) => {
             <View style={styles.wrapper}>
                 <TotalTime time={totalTime}></TotalTime>
 
-                <View style={styles.date_position}>
-                    <Text style={styles.date_text}>{dayStringTransformation(monthString)}</Text>
+            </View>
+            { !weekOn && 
+                <View style={styles.entries_position}>
+                    {entries.map(entry => {
+                        return <WeekItem key={entry.year_week} day={formatWeek(entry.year_week)} totalTime={entry.total_time} onPress={() => weekPress(entry.year_week)}/>
+                    })}
                 </View>
-            </View>
-            <View style={styles.entries_position}>
-                {entries.map(entry => {
-                    return <WeekItem day={entry.year_week} totalTime={entry.total_time} />
-                })}
-            </View>
+            }
+            {weekOn ? (
+                <>
+                    <TouchableOpacity style={styles.back_button} onPress={() => {LayoutAnimation.easeInEaseOut(); setWeekOn(false)}}>
+                        <Text style={styles.back_button_text}>{'<  '} all weeks</Text>
+                    </TouchableOpacity>
+                    {weekComponent}
+                </>
+            ) : null}
         </View>
-
-
     )
 }
 
@@ -96,5 +131,14 @@ const styles = StyleSheet.create({
     date_text: {
         ...Typo.headingBold,
         color: Colors.textPrimary,
+    },
+    back_button: {
+        marginHorizontal: 20,
+        marginTop: 10,
+        gap: 15,
+    },
+    back_button_text: {
+        ...Typo.textMedium,
+        color: Colors.textPrimary
     }
 })
