@@ -6,18 +6,16 @@ import { useIsFocused } from '@react-navigation/native'
 import HoursItem from '../molecules/HoursItem'
 import { Boxes, Colors, Typo } from '../../styles'
 import WeekItem from '../molecules/WeekItem'
+import MonthHistory from './MonthHistory'
+import BackButton from '../atoms/BackButton'
 
 const YearHistory = ({ yearString }) => {
 
     const dayStringTransformation = (inputDate) => {
-        const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
         const date = new Date(inputDate);
-        const dayOfWeek = daysOfWeek[date.getDay()];
-        const dayOfMonth = date.getDate();
         const month = months[date.getMonth()];
-        const year = date.getFullYear();
 
         return `${month}`;
     }
@@ -26,6 +24,9 @@ const YearHistory = ({ yearString }) => {
     const [isLoading, setIsLoading] = useState(true)
     const [totalTime, setTotalTime] = useState(0)
     const [entries, setEntries] = useState([])
+
+    const [monthOn, setMonthOn] = useState(false)
+    const [monthComponent, setMonthComponent] = useState(null)
 
     useEffect(() => {
         // Get total time
@@ -53,6 +54,20 @@ const YearHistory = ({ yearString }) => {
 
     }, [isFocused])
 
+    const monthPress = (monthString) => {
+
+        LayoutAnimation.easeInEaseOut()
+        setMonthComponent(
+            <View>
+                <View style={styles.date_position}>
+                    <Text style={styles.date_text}>{dayStringTransformation(monthString)}</Text>
+                </View>
+                <MonthHistory monthString={monthString} />
+            </View>
+        )
+        setMonthOn(true)
+    }
+
     if (isLoading) return (<ActivityIndicator size="large" style={{ alignSelf: 'center', height: 200 }} />)
 
     else return (
@@ -63,11 +78,23 @@ const YearHistory = ({ yearString }) => {
                     <Text style={styles.date_text}>{yearString}</Text>
                 </View> */}
             </View>
-            <View style={styles.entries_position}>
-                {entries.map(entry => {
-                    return <WeekItem day={dayStringTransformation(entry.year_month)} totalTime={entry.total_time} />
-                })}
-            </View>
+            {!monthOn &&
+                <View style={styles.entries_position}>
+                    {entries.map(entry => {
+                        return <WeekItem 
+                        day={dayStringTransformation(entry.year_month)} 
+                        totalTime={entry.total_time} 
+                        onPress={()=>monthPress(entry.year_month)}
+                        />
+                    })}
+                </View>
+            }
+            {monthOn ? (
+                <>
+                    <BackButton text='all months' onPress={() => { setMonthOn(false) }}></BackButton>
+                    {monthComponent}
+                </>
+            ) : null}
         </View>
 
 
@@ -88,7 +115,7 @@ const styles = StyleSheet.create({
         gap: 15
     },
     date_position: {
-        marginHorizontal: 20,
+        marginHorizontal: 30,
         marginTop: 20,
     },
     date_text: {

@@ -57,19 +57,22 @@ const WeekHistory = ({ weekString }) => {
 
     else return (
         <View>
-        <View style={styles.wrapper}>
-            <TotalTime time={totalTime}></TotalTime>
-    
-                {/* <View style={styles.date_position}>
-                    <Text style={styles.date_text}>{formatWeek(weekString)}</Text>
-                </View> */}
-        </View>
-                <View style={styles.entries_position}>
-                   {entries.map(entry => {
-                    console.log(entry)
-                    return <DayHistory key={entry.day} dayString={entry.day} mainScreen={false}/>
-                   })}
-                </View>
+            <View style={styles.wrapper}>
+                <TotalTime time={totalTime}></TotalTime>
+        
+                    {/* <View style={styles.date_position}>
+                        <Text style={styles.date_text}>{formatWeek(weekString)}</Text>
+                    </View> */}
+            </View>
+            <View style={styles.entries_position}>
+                {entries.map(entry => {
+                console.log(entry)
+                return <DayHistory 
+                key={entry.day} 
+                dayString={entry.day} 
+                mainScreen={false}/>
+                })}
+            </View>
         </View>
             
         

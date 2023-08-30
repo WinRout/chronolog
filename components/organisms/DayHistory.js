@@ -65,7 +65,8 @@ const DayHistory = ({dayString, mainScreen=true}) => {
                 <View style={styles.entries_position}>
                     {console.log(entries)}
                     {entries.map(entry => {
-                        return <HoursItem key={entry.dateIn}
+                        return <HoursItem 
+                        key={entry.dateIn}
                             dateIn={entry.dateIn}
                             dateOut={entry.dateOut}
                             locationIn={entry.locationIn}
